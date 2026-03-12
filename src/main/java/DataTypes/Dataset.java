@@ -57,4 +57,24 @@ public class Dataset {
             return lecturaDataset;
         }
     }
+
+    // Método para mostrar el dataset cargado
+    public static void mostrarDataset(List<Estacion> dataset) {
+        if (dataset == null || dataset.isEmpty()) {
+            System.out.println("Dataset vacío o no cargado.");
+            return;
+        }
+
+        System.out.println("Dataset cargado correctamente:");
+        System.out.println("DIMENSION: " + dataset.size() + " estaciones");
+        System.out.println("Estaciones:");
+
+        for (Estacion e : dataset) {
+            System.out.println("  " + e);  // Usa tu toString()
+        }
+
+        System.out.println("Total: " + dataset.size() + " estaciones cargadas.");
+    }
+
+
 }
