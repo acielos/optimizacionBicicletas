@@ -2,15 +2,8 @@ package main.java.Controlador;
 
 import main.java.DataTypes.*;
 import main.java.Modelo.*;
-
-import javax.xml.crypto.Data;
 import java.io.IOException;
 
-import java.io.IOException;  // Si usas BufferedReader o similar
-
-import main.java.DataTypes.Dataset;
-import main.java.DataTypes.Estacion;
-import java.io.IOException;
 import java.util.List;
 
 public class Main {
