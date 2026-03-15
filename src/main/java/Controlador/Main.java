@@ -9,13 +9,11 @@ import java.util.List;
 public class Main {
     public static void main(String[] args) {
         try {
-            // Ruta al archivo TSP (ajusta si está en resources o src)
-            String ruta = "././datasetBicis.tsp";  // O ruta absoluta
+            String ruta = "././datasetBicis.tsp";
 
             List<Estacion> dataset = Dataset.leerFicheros(ruta);
-            Dataset.mostrarDataset(dataset);  // Muestra y verifica
+            Dataset.mostrarDataset(dataset);
 
-            // Aquí puedes usar dataset para algoritmos...
             System.out.println("\n¡Listo para optimizar rutas de bicicletas!");
 
         } catch (IOException e) {
