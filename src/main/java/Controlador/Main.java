@@ -14,8 +14,6 @@ public class Main {
             List<Estacion> dataset = Dataset.leerFicheros(ruta);
             Dataset.mostrarDataset(dataset);
 
-            System.out.println("\n¡Listo para optimizar rutas de bicicletas!");
-
         } catch (IOException e) {
             System.err.println("Error cargando dataset: " + e.getMessage());
             System.err.println("Verifica la ruta al archivo datosBicis.tsp");
