@@ -21,15 +21,17 @@ public class Greedy extends Algoritmo {
 
         // Definimos que SIEMPRE comenzaremos por la primera estación, pase lo que pase
         int estInicial = 0;
+        int estActual = 0;  // Porque siempre empezaremos por la 0
+        int estAntigua = 0;
 
         // Como comenzamos por la estacion 0, vamos a marcar su distancia como infinito para que no volvamos
         // a visitarla en un futuro
         for (int i = 0; i < this.listaEstaciones.size(); i++) {
-            distancias[i][estInicial] = Double.POSITIVE_INFINITY;
+            this.distancias[i][estInicial] = Double.POSITIVE_INFINITY;
         }
 
         // Añadimos al recorrido del camión que ya hemos visitado la primera estación
-        camion.recorrido.add(this.listaEstaciones.get(estInicial));
+        this.recorrido.add(this.listaEstaciones.get(estInicial));
 
         // Nuestro dataset será siempre de 16 estaciones, pero por si a caso en el
         // futuro lo aumentamos, jugaremos con el zise; También tendremos un contador
@@ -38,8 +40,31 @@ public class Greedy extends Algoritmo {
 
         while (visitadas < this.listaEstaciones.size()) {
 
+            double mejorDistancia = Double.POSITIVE_INFINITY;
+
+            for (int i = 0; i < this.listaEstaciones.size(); i++) {
+                if (this.distancias[estActual][i] < mejorDistancia) {
+                    mejorDistancia = distancias[estActual][i];
+                    estAntigua = estActual;
+                    estActual = i;
+                }
+            }
             visitadas++;
+
+            // Añadimos la ciudad que vamos a visitar al camino
+            this.recorrido.add(this.listaEstaciones.get(estActual));
+
+            // Añadimos la distancia recorrida para guardar
+            this.distanciaRecorrida += distanciaManhattan.calculaDistancia(this.listaEstaciones.get(estActual), this.listaEstaciones.get(estAntigua));
+
+            // "Recalculamos" la distancia a la ciudad actual
+            for (int i = 0; i < this.listaEstaciones.size(); i++) {
+                this.distancias[i][estActual] = Double.POSITIVE_INFINITY;
+            }
         }
+
+        // Añadimos la distancia desde la ultima estaci´on hasta la primera, que tendrá que volver
+        this.distanciaRecorrida += distanciaManhattan.calculaDistancia(this.recorrido.getLast(),  this.recorrido.getFirst());
 
     };
 }

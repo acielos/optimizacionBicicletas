@@ -6,20 +6,23 @@ import main.java.DataTypes.*;
 public abstract class Algoritmo {
     // Asquí metemos los atributos que usen TODOS
     protected List<Estacion> listaEstaciones;
-    protected Camion camion;
+    public Camion camion;
     protected int[] semilla = {};
     protected Double[][] distancias;
-    protected DistanciaManhattan distanciaManhattan;
+    protected DistanciaManhattan distanciaManhattan = new DistanciaManhattan();
+    public List<Estacion> recorrido = new ArrayList<Estacion>();
+    public double distanciaRecorrida = 0;
 
     // Asquí el método que TODOS deben implementar (porque heredan)
     public abstract void run();
 
     // Método para calcular las distancias
-    protected void calcularDistancias() {
+    public void calcularDistancias() {
         for (int i = 0; i < this.listaEstaciones.size(); i++) {
             this.distancias[i][i] = Double.POSITIVE_INFINITY;
             for (int j = 0; j < i; j++) {
-                this.distancias[i][j] = distanciaManhattan.calculaDistancia(this.listaEstaciones.get(i), this.listaEstaciones.get(j));
+                this.distancias[i][j] = this.distanciaManhattan.calculaDistancia(this.listaEstaciones.get(i), this.listaEstaciones.get(j));
+                this.distancias[j][i] = this.distancias[i][j];
             }
         }
     }
