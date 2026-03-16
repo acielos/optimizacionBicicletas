@@ -61,19 +61,17 @@ public class Dataset {
     // Método para mostrar el dataset cargado
     public static void mostrarDataset(List<Estacion> dataset) {
         if (dataset == null || dataset.isEmpty()) {
-            System.out.println("Dataset vacío o no cargado.");
+            System.out.println("ERROR - DATASET NO CARGADO");
             return;
         }
 
-        System.out.println("Dataset cargado correctamente:");
-        System.out.println("DIMENSION: " + dataset.size() + " estaciones");
-        System.out.println("Estaciones:");
+        System.out.println("\n\n *** DATASET CARGADO CORRECTAMENTE *** \n");
+        System.out.println("Nº de Estaciones: " + dataset.size());
+        System.out.println("Listado de estaciones:");
 
         for (Estacion e : dataset) {
-            System.out.println("  " + e);  // Usa tu toString()
+            System.out.println("  " + e);
         }
-
-        System.out.println("Total: " + dataset.size() + " estaciones cargadas.");
     }
 
 
