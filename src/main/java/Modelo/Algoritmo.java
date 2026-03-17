@@ -7,7 +7,7 @@ public abstract class Algoritmo {
     // Asquí metemos los atributos que usen TODOS
     protected List<Estacion> listaEstaciones;
     public Camion camion;
-    protected int[] semilla = {};
+    protected long[] semilla = {11111, 22222, 33333, 44444, 55555};
     protected Double[][] distancias;
     protected DistanciaManhattan distanciaManhattan = new DistanciaManhattan();
     public List<Estacion> recorrido = new ArrayList<Estacion>();

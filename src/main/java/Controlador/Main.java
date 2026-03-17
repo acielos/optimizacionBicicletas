@@ -130,11 +130,15 @@ public class Main {
                 case 3:
                     break;
                 case 4:
+                    System.out.println(" **** Greedy **** ");
                     Algoritmo greedy = new Greedy(dataset);
                     greedy.run();
-                    // System.out.println(greedy.recorrido);
                     System.out.println(greedy.distanciaRecorrida);
-                    System.out.println(greedy.recorrido);
+
+                    System.out.println(" **** Búsqueda Aleatoria **** ");
+                    Algoritmo busquedaAleatoria = new BusquedaAleatoria(dataset);
+                    busquedaAleatoria.run();
+
                     break;
                 case 5:
                     System.out.println("\n ***** Finalización del Programa ***** \n");
