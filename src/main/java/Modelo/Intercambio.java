@@ -18,9 +18,13 @@ public class Intercambio {
             num[i] = (int)(Math.random() * (max - min + 1) + min);
         }
 
+        while (num[0] == num[1]) {
+            num[1] = (int)(Math.random() * (max - min + 1) + min);
+        }
+
         // Asignamos a estas variables los valores que vamos a cambiar
-        Estacion pos1 = lista.get(num[0]);
-        Estacion pos2 = lista.get(num[1]);
+        Estacion pos1 = lista.get(num[1]);
+        Estacion pos2 = lista.get(num[0]);
 
         // Cambiamos las posiciones
         lista.set(num[0], pos1);

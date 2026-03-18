@@ -19,8 +19,8 @@ public class BusquedaLocalMV extends Algoritmo {
 
         for (int i = 0; i < 5; i++) {
 
-            // Reseteamos la distancia
-            this.distanciaRecorrida = 0;
+            // Reseteamos la mejor distancia
+            this.mejorDistancia = Double.POSITIVE_INFINITY;
 
             // Para la semilla
             Random rand = new Random(this.semilla[i]);
@@ -34,6 +34,9 @@ public class BusquedaLocalMV extends Algoritmo {
             // Unimos de nuevo todo
             mezclado.addFirst(datasetCopiado.getFirst());
 
+            // Hacemos una copia del dataset donde iremos guardando el mejor vecino hasta el momento
+            List<Estacion> mejorVecino = Dataset.copiaDataset(mezclado);
+
             // "Número" de llamadas a la función objetivo
             int llamadas = 0;
 
@@ -41,7 +44,7 @@ public class BusquedaLocalMV extends Algoritmo {
             int noMejorado = 0;
 
             // Una vez lo tenemos todo, vamos a proceder a la parte interesante del algoritmo
-            while(llamadas < 3000 && noMejorado < 100) {
+            while(llamadas < 3000 && noMejorado < 1000) {
 
                 // Reseteamos la distancia
                 this.distanciaRecorrida = 0;
@@ -52,21 +55,24 @@ public class BusquedaLocalMV extends Algoritmo {
                 }
 
                 // Comprobamos si es mejor la distancia que la que teníamos hasta el momento
-                if (this.distanciaRecorrida < this.mejorDistancia) {
+                if (this.distanciaRecorrida <= this.mejorDistancia) {
                     this.mejorDistancia = this.distanciaRecorrida;
                     this.distanciaRecorrida = 0;
                     noMejorado = 0;
+                    mejorVecino = Dataset.copiaDataset(mezclado);
                 } else {
                     // En caso que no mejoremos lo anotamos
                     noMejorado++;
                 }
 
                 // Cambiamos dos posiciones
-                mezclado = inter.cambiar(mezclado);
+                mezclado = inter.cambiar(mejorVecino);
+
+                llamadas++;
             }
 
             // Mostramos por pantalla la distancia calculada con cada una de las 5 semillas
-            System.out.println(this.distanciaRecorrida);
+            System.out.println(this.mejorDistancia);
         }
     }
 }
