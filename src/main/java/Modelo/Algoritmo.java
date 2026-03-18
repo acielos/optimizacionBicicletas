@@ -12,6 +12,9 @@ public abstract class Algoritmo {
     protected DistanciaManhattan distanciaManhattan = new DistanciaManhattan();
     public List<Estacion> recorrido = new ArrayList<Estacion>();
     public double distanciaRecorrida = 0;
+    protected double mejorDistancia = Double.POSITIVE_INFINITY;
+
+    protected Intercambio inter = new Intercambio();
 
     // Asquí el método que TODOS deben implementar (porque heredan)
     public abstract void run();

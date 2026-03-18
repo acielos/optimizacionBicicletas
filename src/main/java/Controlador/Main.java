@@ -139,6 +139,10 @@ public class Main {
                     Algoritmo busquedaAleatoria = new BusquedaAleatoria(dataset);
                     busquedaAleatoria.run();
 
+                    System.out.println(" **** Búsqueda Local Mejor Vecino **** ");
+                    Algoritmo busquedaLocal = new BusquedaLocalMV(dataset);
+                    busquedaLocal.run();
+
                     break;
                 case 5:
                     System.out.println("\n ***** Finalización del Programa ***** \n");

@@ -74,5 +74,10 @@ public class Dataset {
         }
     }
 
+    // Método para copiar los datasets
+    public static List<Estacion> copiaDataset(List<Estacion> dataset) {
+        return new ArrayList<>(dataset);
+    }
+
 
 }

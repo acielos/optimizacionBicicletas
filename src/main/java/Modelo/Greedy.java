@@ -41,11 +41,9 @@ public class Greedy extends Algoritmo {
 
         while (visitadas < this.listaEstaciones.size()) {
 
-            double mejorDistancia = Double.POSITIVE_INFINITY;
-
             for (int i = 0; i < this.listaEstaciones.size(); i++) {
-                if (this.distancias[estActual][i] < mejorDistancia) {
-                    mejorDistancia = distancias[estActual][i];
+                if (this.distancias[estActual][i] < this.mejorDistancia) {
+                    this.mejorDistancia = distancias[estActual][i];
                     estActual = i;
                 }
             }

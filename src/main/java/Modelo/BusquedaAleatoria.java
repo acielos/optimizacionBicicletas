@@ -16,7 +16,7 @@ public class BusquedaAleatoria extends Algoritmo {
             Random rand = new Random(this.semilla[i]);
 
             // Hacemos una copia del dataset que es la que vamos a utlizar para la mezcla
-            List<Estacion> copiaLista = this.listaEstaciones;
+            List<Estacion> copiaLista = Dataset.copiaDataset(this.listaEstaciones);
 
             // Definimos la distancia a 0 ara cada iteración de cada semilla
             this.distanciaRecorrida = 0;
