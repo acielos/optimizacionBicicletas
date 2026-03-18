@@ -59,14 +59,14 @@ public class BusquedaLocalMV extends Algoritmo {
                     this.mejorDistancia = this.distanciaRecorrida;
                     this.distanciaRecorrida = 0;
                     noMejorado = 0;
-                    mejorVecino = Dataset.copiaDataset(mezclado);
+                    mejorVecino = mezclado;
                 } else {
                     // En caso que no mejoremos lo anotamos
                     noMejorado++;
                 }
 
                 // Cambiamos dos posiciones
-                mezclado = inter.cambiar(mejorVecino);
+                mezclado = inter.cambiar(Dataset.copiaDataset(mejorVecino));
 
                 llamadas++;
             }
