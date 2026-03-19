@@ -1,12 +1,14 @@
 package main.java.Modelo;
 
 import main.java.DataTypes.Estacion;
+import java.util.*;
 
 public class DistanciaManhattan {
-    public double distancia_total;
+    private double distancia_total;
     private double radio = 6371.0;
 
     public double calculaDistancia(Estacion estacion1, Estacion estacion2) {
+        this.distancia_total = 0;
         // Calculamos en radianes los variables que necesitamos
         double dlat_rad = Math.toRadians(Math.abs(estacion2.latitud - estacion1.latitud));
         double dlon_rad = Math.toRadians(Math.abs(estacion2.longitud - estacion1.longitud));
@@ -18,6 +20,17 @@ public class DistanciaManhattan {
         distancia_total = dist_norte_sur + dist_este_oeste;
 
         // Evidentemente devolvemos la distancia total entre los dos puntos
+        return distancia_total;
+    }
+
+    public double calculaCompleto (List<Estacion> dataset) {
+        double distancia_total = 0;
+        for (int i = 0; i < dataset.size()-1; i++) {
+            Estacion estacion1 = dataset.get(i);
+            Estacion estacion2 = dataset.get(i+1);
+            distancia_total += calculaDistancia(estacion1, estacion2);
+        }
+
         return distancia_total;
     }
 }

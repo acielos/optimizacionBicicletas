@@ -17,7 +17,17 @@ public class BusquedaLocalMV extends Algoritmo {
         // Vamos a trabajar con una copia del dataset, para que no se lie
         List<Estacion> datasetCopiado = Dataset.copiaDataset(this.listaEstaciones);
 
+
         for (int i = 0; i < 5; i++) {
+
+            // Creamos el array en el que guardaremos las soluciones de los vecinos
+            List<List<Estacion>> vecinos = new ArrayList<>(datasetCopiado.size());
+
+            // Limpiamos para cada ejecución
+            vecinos.clear();
+
+            // Array para guardar las distancias de los distintos vecinos
+            List<Double> distancias = new ArrayList<>(datasetCopiado.size());
 
             // Reseteamos la mejor distancia
             this.mejorDistancia = Double.POSITIVE_INFINITY;
@@ -46,29 +56,73 @@ public class BusquedaLocalMV extends Algoritmo {
             // Una vez lo tenemos todo, vamos a proceder a la parte interesante del algoritmo
             while(llamadas < 3000 && noMejorado < 1000) {
 
-                // Reseteamos la distancia
-                this.distanciaRecorrida = 0;
-
-                // Calculamos la distancia del actual
-                for (int j = 0; j < mezclado.size()-1; j++) {
-                    this.distanciaRecorrida += distanciaManhattan.calculaDistancia(mezclado.get(j), mezclado.get(j+1));
+                // Generamos 200 soluciones
+                for (int j = 0; j < 200; j++) {
+                    List<Estacion> vecino = inter.cambiar(Dataset.copiaDataset(mejorVecino));
+                    distancias.add(distanciaManhattan.calculaCompleto(vecino));
+                    vecinos.add(vecino);
                 }
 
-                // Comprobamos si es mejor la distancia que la que teníamos hasta el momento
-                if (this.distanciaRecorrida <= this.mejorDistancia) {
-                    this.mejorDistancia = this.distanciaRecorrida;
-                    this.distanciaRecorrida = 0;
-                    noMejorado = 0;
-                    mejorVecino = mezclado;
-                } else {
-                    // En caso que no mejoremos lo anotamos
-                    noMejorado++;
+                // Comprobamos cual es el mejor vecino encontrado hasta ahora y nos quedamos con el
+                for (int c = 0; c < distancias.size(); c++) {
+                    if (distancias.get(c) < this.mejorDistancia) {
+                        this.mejorDistancia = distancias.get(c);
+                        mejorVecino = Dataset.copiaDataset(vecinos.get(c));
+                    }
                 }
-
-                // Cambiamos dos posiciones
-                mezclado = inter.cambiar(Dataset.copiaDataset(mejorVecino));
 
                 llamadas++;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//                // Reseteamos la distancia
+//                this.distanciaRecorrida = 0;
+//
+//                // Calculamos la distancia del actual
+//                for (int j = 0; j < mezclado.size()-1; j++) {
+//                    this.distanciaRecorrida += distanciaManhattan.calculaDistancia(mezclado.get(j), mezclado.get(j+1));
+//                }
+//
+//                // Comprobamos si es mejor la distancia que la que teníamos hasta el momento
+//                if (this.distanciaRecorrida <= this.mejorDistancia) {
+//                    this.mejorDistancia = this.distanciaRecorrida;
+//                    this.distanciaRecorrida = 0;
+//                    noMejorado = 0;
+//                    mejorVecino = mezclado;
+//                } else {
+//                    // En caso que no mejoremos lo anotamos
+//                    noMejorado++;
+//                }
+//
+//                // Cambiamos dos posiciones
+//                mezclado = inter.cambiar(Dataset.copiaDataset(mejorVecino));
+//
+//                llamadas++;
             }
 
             // Mostramos por pantalla la distancia calculada con cada una de las 5 semillas
