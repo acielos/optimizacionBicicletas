@@ -15,6 +15,6 @@ public class Estacion {
 
     // Damos formato a la visualización de la estación (en la terminal, en mapa ya buscamos si eso)
     public String toString(){
-        return String.format("%d (%.10f, %.10f)", id, latitud, longitud);
+        return String.format("%d (%.10f, %.10f), %d, %d", id, latitud, longitud, carga, capacidad);
     }
 }

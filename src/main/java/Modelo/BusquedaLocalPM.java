@@ -46,12 +46,6 @@ public class BusquedaLocalPM extends Algoritmo{
                 // Reseteamos la distancia
                 double coste = distanciaManhattan.calculaCompleto(mezclado);
 
-                // Calculamos la distancia del actual
-
-//                for (int j = 0; j < mezclado.size()-1; j++) {
-//                    this.distanciaRecorrida += distanciaManhattan.calculaDistancia(mezclado.get(j), mezclado.get(j+1));
-//                }
-
                 // Comprobamos si es mejor la distancia que la que teníamos hasta el momento
                 if (coste <= this.mejorDistancia) {
                     this.mejorDistancia = coste;

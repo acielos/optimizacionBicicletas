@@ -72,57 +72,6 @@ public class BusquedaLocalMV extends Algoritmo {
                 }
 
                 llamadas++;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//                // Reseteamos la distancia
-//                this.distanciaRecorrida = 0;
-//
-//                // Calculamos la distancia del actual
-//                for (int j = 0; j < mezclado.size()-1; j++) {
-//                    this.distanciaRecorrida += distanciaManhattan.calculaDistancia(mezclado.get(j), mezclado.get(j+1));
-//                }
-//
-//                // Comprobamos si es mejor la distancia que la que teníamos hasta el momento
-//                if (this.distanciaRecorrida <= this.mejorDistancia) {
-//                    this.mejorDistancia = this.distanciaRecorrida;
-//                    this.distanciaRecorrida = 0;
-//                    noMejorado = 0;
-//                    mejorVecino = mezclado;
-//                } else {
-//                    // En caso que no mejoremos lo anotamos
-//                    noMejorado++;
-//                }
-//
-//                // Cambiamos dos posiciones
-//                mezclado = inter.cambiar(Dataset.copiaDataset(mejorVecino));
-//
-//                llamadas++;
             }
 
             // Mostramos por pantalla la distancia calculada con cada una de las 5 semillas
