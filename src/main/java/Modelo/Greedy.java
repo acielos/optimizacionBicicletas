@@ -50,12 +50,18 @@ public class Greedy extends Algoritmo {
 
         while (visitadas < this.listaEstaciones.size()) {
 
+            double mejorDistanciaLocal = Double.POSITIVE_INFINITY;
+            int siguiente = estActual;
+
             for (int i = 0; i < this.listaEstaciones.size(); i++) {
                 if (this.distancias[estActual][i] < this.mejorDistancia) {
-                    this.mejorDistancia = distancias[estActual][i];
-                    estActual = i;
+                    mejorDistanciaLocal = distancias[estActual][i];
+                    siguiente = i;
                 }
             }
+
+            estActual = siguiente;
+            visitadas++;
 
             // Añadimos la ciudad que vamos a visitar al camino
             this.recorrido.addLast(this.listaEstaciones.get(estActual));
@@ -71,8 +77,6 @@ public class Greedy extends Algoritmo {
             for (int i = 0; i < this.listaEstaciones.size(); i++) {
                 this.distancias[i][estActual] = Double.POSITIVE_INFINITY;
             }
-
-            visitadas++;
         }
 
         // Añadimos la distancia desde la ultima estaci´on hasta la primera, que tendrá que volver
