@@ -65,6 +65,55 @@ public class Main {
                     }
                     break;
                 case 3:
+                    int opc3 = -1;
+                    do {
+                        System.out.println(" ");
+                        System.out.println("           Probar Estrategia ");
+                        System.out.println("==========================================");
+                        System.out.println("    1. Greedy");
+                        System.out.println("    2. Búsqueda Aleatoria");
+                        System.out.println("    3. Búsqueda Local: Mejor Vecino");
+                        System.out.println("    4. Búsqueda Local: Primer Mejor");
+                        System.out.println("    5. Enfriamiento Simulado");
+                        System.out.println("    6. Búsqueda Tabú");
+                        System.out.println("    0. Salir");
+                        System.out.println("==========================================");
+                        System.out.print("      Escoga una opción -> ");
+                        opc3 = sc.nextInt();
+                        if (opc3 < 0 || opc3 > 6) {
+                            System.out.println("** ERROR - POR FAVOR INTRODUZCA UN VALOR VÁLIDO **");
+                        }
+
+                        switch (opc3) {
+                            case 1:
+                                System.out.println(" **** Greedy **** ");
+                                Algoritmo greedy = new Greedy(dataset);
+                                greedy.run();
+                                System.out.println(" ");
+                                System.out.println(greedy.distanciaRecorrida);
+                                break;
+                            case 2:
+                                System.out.println(" **** Búsqueda Aleatoria **** ");
+                                Algoritmo busquedaAleatoria = new BusquedaAleatoria(dataset);
+                                busquedaAleatoria.run();
+                                break;
+                            case 3:
+                                System.out.println(" **** Búsqueda Local Mejor Vecino **** ");
+                                Algoritmo busquedaLocalMV = new BusquedaLocalMV(dataset);
+                                busquedaLocalMV.run();
+                                break;
+                            case 4:
+                                System.out.println(" **** Búsqueda Local Primer Mejor **** ");
+                                Algoritmo busquedaLocalPM = new BusquedaLocalPM(dataset);
+                                busquedaLocalPM.run();
+                                break;
+                            case 5:
+                                break;
+                            case 6:
+                                break;
+                        }
+                    } while (opc3 != 0);
+
                     break;
                 case 4:
                     System.out.println(" **** Greedy **** ");

@@ -12,6 +12,10 @@ public class Greedy extends Algoritmo {
 
     public void run(){
 
+        // por si a caso, reseteamos la distancia
+        this.distanciaRecorrida = 0;
+        this.recorrido.clear();
+
         // El camión partirá con carga 7 bicicletas
         this.camion.carga = 7;
 
@@ -54,7 +58,7 @@ public class Greedy extends Algoritmo {
             int siguiente = estActual;
 
             for (int i = 0; i < this.listaEstaciones.size(); i++) {
-                if (this.distancias[estActual][i] < this.mejorDistancia) {
+                if (this.distancias[estActual][i] < mejorDistanciaLocal) {
                     mejorDistanciaLocal = distancias[estActual][i];
                     siguiente = i;
                 }
@@ -71,7 +75,7 @@ public class Greedy extends Algoritmo {
             }
 
             // Añadimos la distancia recorrida para guardar
-            this.distanciaRecorrida += mejorDistancia;
+            this.distanciaRecorrida += mejorDistanciaLocal;
 
             // "Recalculamos" la distancia a la ciudad actual
             for (int i = 0; i < this.listaEstaciones.size(); i++) {
