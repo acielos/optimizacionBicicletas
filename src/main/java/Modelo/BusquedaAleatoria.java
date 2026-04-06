@@ -61,8 +61,6 @@ public class BusquedaAleatoria extends Algoritmo {
 
             }
 
-
-
             System.out.println("\n--- Resultado Búsqueda Aleatoria ---");
             System.out.printf("Recorrido: ");
             for (Estacion e : recorrido) System.out.print(e.id + " ");

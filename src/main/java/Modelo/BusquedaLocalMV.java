@@ -53,12 +53,15 @@ public class BusquedaLocalMV extends Algoritmo {
             // Para comprobar si mejora o no
             int noMejorado = 0;
 
+            List<Estacion> vecino = new ArrayList<>(datasetCopiado.size());
+
             // Una vez lo tenemos todo, vamos a proceder a la parte interesante del algoritmo
-            while(llamadas < 3000 && noMejorado < 1000) {
+            while(llamadas < 3000) {
 
                 // Generamos 200 soluciones
                 for (int j = 0; j < 200; j++) {
-                    List<Estacion> vecino = inter.cambiar(Dataset.copiaDataset(mejorVecino));
+                    vecino.clear();
+                    vecino = inter.cambiar(Dataset.copiaDataset(mejorVecino));
                     double distVecino = distanciaManhattan.calculaCompleto(vecino);
                     funcionObjetivo.add(calcularFObjetivo(distVecino, vecino));
                     vecinos.add(vecino);
