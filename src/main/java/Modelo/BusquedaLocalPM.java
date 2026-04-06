@@ -54,7 +54,7 @@ public class BusquedaLocalPM extends Algoritmo{
                 }
 
                 // Cambiamos dos posiciones
-                mezclado = inter.cambiar(Dataset.copiaDataset(mejorVecino));
+                //mezclado = inter.cambiar(Dataset.copiaDataset(mejorVecino));
 
                 llamadas++;
             }

@@ -57,11 +57,11 @@ public class BusquedaLocalMV extends Algoritmo {
             while(llamadas < 3000 && noMejorado < 1000) {
 
                 // Generamos 200 soluciones
-                for (int j = 0; j < 200; j++) {
-                    List<Estacion> vecino = inter.cambiar(Dataset.copiaDataset(mejorVecino));
-                    distancias.add(distanciaManhattan.calculaCompleto(vecino));
-                    vecinos.add(vecino);
-                }
+//                for (int j = 0; j < 200; j++) {
+//                    List<Estacion> vecino = inter.cambiar(Dataset.copiaDataset(mejorVecino));
+//                    distancias.add(distanciaManhattan.calculaCompleto(vecino));
+//                    vecinos.add(vecino);
+//                }
 
                 // Comprobamos cual es el mejor vecino encontrado hasta ahora y nos quedamos con el
                 for (int c = 0; c < distancias.size(); c++) {

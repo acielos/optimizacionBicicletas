@@ -24,13 +24,20 @@ public class DistanciaManhattan {
     }
 
     public double calculaCompleto (List<Estacion> dataset) {
+        // Var. local para sumar
         double distancia_total = 0;
+
+        // Bucle para calcular (en el orden dado) las distancias
         for (int i = 0; i < dataset.size()-1; i++) {
             Estacion estacion1 = dataset.get(i);
             Estacion estacion2 = dataset.get(i+1);
             distancia_total += calculaDistancia(estacion1, estacion2);
         }
 
+        // Calcular vuelta de la ultima a la 0
+        distancia_total += calculaDistancia(dataset.getLast(), dataset.getFirst());
+
+        // Devolvemos el total de la distancia
         return distancia_total;
     }
 }

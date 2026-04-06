@@ -12,86 +12,82 @@ public class Greedy extends Algoritmo {
 
     public void run(){
 
-        // por si a caso, reseteamos la distancia
-        this.distanciaRecorrida = 0;
+        // Reseteamos por si se hacen varias ejecuciones
+        this.distanciaRecorrida = 0.0;
+        this.numEvaluaciones = 0;
         this.recorrido.clear();
 
-        // El camión partirá con carga 7 bicicletas
+        // Preparamos el camión con 7 bicicletas
         this.camion.carga = 7;
 
-        // Creamos la matriz para guardar las distancias
-        this.distancias = new Double[this.listaEstaciones.size()][this.listaEstaciones.size()];
-
-        // Calculamos las distancias
+        // Generamos la matriz de distancias
+        this.distancias = new Double[listaEstaciones.size()][listaEstaciones.size()];
         calcularDistancias();
 
-        // Definimos que SIEMPRE comenzaremos por la primera estación, pase lo que pase
-        int estInicial = 0;
-        int estActual = 0;  // Porque siempre empezaremos por la 0
+        // Declaramos la primera estación del recorrido
+        int estActual = 0;
+        this.recorrido.addFirst(listaEstaciones.get(estActual));
+        equilibrarEstacion(this.recorrido.getFirst());  // Solo tenemos 1 por ahora, estqria bien asi
 
-        // Como comenzamos por la estacion 0, vamos a marcar su distancia como infinito para que no volvamos
-        // a visitarla en un futuro
-        for (int i = 0; i < this.listaEstaciones.size(); i++) {
-            this.distancias[i][estInicial] = Double.POSITIVE_INFINITY;
+        // Actualizamos nuestra matriz de distancias para no volver a coger la est. 0
+        for(int i = 0; i < listaEstaciones.size(); i++){
+            this.distancias[i][0] = Double.POSITIVE_INFINITY;
         }
 
-        // Limpiamos por si nos ad errores o algo
-        this.recorrido.clear();
-
-        // Añadimos al recorrido del camión que ya hemos visitado la primera estación
-        this.recorrido.add(this.listaEstaciones.get(estInicial));
-
-        // Nuestro dataset será siempre de 16 estaciones, pero por si a caso en el
-        // futuro lo aumentamos, jugaremos con el zise; También tendremos un contador
-        // para que nos cuente cuántas estaciones hemos recorrido
-        int visitadas = 1; // -> No es igual a 0 porque la primera estación ya la hemos "visitado"
-
-        // Antes de comenzar con el resto de estaciones, vamos a mirar la primera estación para equilibrarla
-        while (this.recorrido.getFirst().carga < Math.ceil(this.recorrido.getFirst().capacidad / 2.0)) {
-            this.recorrido.getFirst().carga++;
-            //this.camion.carga--;
-        }
-
-        while (visitadas < this.listaEstaciones.size()) {
-
+        while (this.recorrido.size() < listaEstaciones.size()){
+            // Variables locales que usaremos para encontrar la est. mas cercana
             double mejorDistanciaLocal = Double.POSITIVE_INFINITY;
-            int siguiente = estActual;
+            int estSiguiente = estActual;
 
-            for (int i = 0; i < this.listaEstaciones.size(); i++) {
-                if (this.distancias[estActual][i] < mejorDistanciaLocal) {
-                    mejorDistanciaLocal = distancias[estActual][i];
-                    siguiente = i;
+            // Bucle para encontrar la menor distancia
+            for(int i = 0; i < listaEstaciones.size(); i++){
+                if (this.distancias[estActual][i] < mejorDistanciaLocal){
+                    mejorDistanciaLocal = this.distancias[estActual][i];
+                    estSiguiente = i;
                 }
             }
 
-            estActual = siguiente;
-            visitadas++;
-
-            // Añadimos la ciudad que vamos a visitar al camino
-            this.recorrido.addLast(this.listaEstaciones.get(estActual));
-
-            while (this.recorrido.getLast().carga < Math.ceil(this.recorrido.getLast().capacidad / 2.0)) {
-                this.recorrido.getLast().carga++;
-            }
-
-            // Añadimos la distancia recorrida para guardar
+            // Una vez encontrada la mejor, sumamos al recorrido...
             this.distanciaRecorrida += mejorDistanciaLocal;
 
-            // "Recalculamos" la distancia a la ciudad actual
-            for (int i = 0; i < this.listaEstaciones.size(); i++) {
+            // Añadimos la estación a nuestro recorrido
+            this.recorrido.add(listaEstaciones.get(estSiguiente));
+
+            // Actualizamos variables
+            estActual = estSiguiente;
+
+            // Equilibramos la estación si es posible
+            equilibrarEstacion(this.recorrido.getLast());
+
+            // Actualizamos nuestra matriz de distancias para no volver a coger la estActual
+            for(int i = 0; i < listaEstaciones.size(); i++){
                 this.distancias[i][estActual] = Double.POSITIVE_INFINITY;
             }
         }
 
-        // Añadimos la distancia desde la ultima estaci´on hasta la primera, que tendrá que volver
-        this.distanciaRecorrida += distanciaManhattan.calculaDistancia(this.recorrido.getLast(),  this.recorrido.getFirst());
+        // Una vez visitemos todas, tenemos que volver al origen
+        this.distanciaRecorrida += distanciaManhattan.calculaDistancia(this.recorrido.getFirst(),  this.recorrido.getLast());
 
-        // Mostramos las estaciones
-        for (int i = 0; i < this.recorrido.size(); i++) {
-            System.out.println(" ");
-            System.out.print(this.recorrido.get(i).id + " ");
-            System.out.print(this.recorrido.get(i).capacidad + " ");
-            System.out.print(this.recorrido.get(i).carga);
+        // Calculamos la Función Objetivo de nuestro resultado
+        double entropia = calcularEntropiaTotal(this.recorrido);
+        double funObjetivo = calcularFObjetivo(this.distanciaRecorrida, this.recorrido);
+
+
+        System.out.println("\n--- Resultado Greedy ---");
+        System.out.printf("Recorrido: ");
+        for (Estacion e : recorrido) System.out.print(e.id + " ");
+        System.out.println("-> 0");
+
+        System.out.printf("Kilómetros recorridos : %.4f km%n", distanciaRecorrida);
+        System.out.printf("Función objetivo      : %.4f%n", funObjetivo);
+        System.out.printf("Evaluaciones          : %d%n", numEvaluaciones);
+
+        System.out.println("\nEstado final de las estaciones:");
+        System.out.printf("%-6s %-10s %-10s %-8s%n", "ID", "Carga", "Capacidad", "% ocup.");
+        for (Estacion e : recorrido) {
+            double pct = 100.0 * e.carga / e.capacidad;
+            System.out.printf("%-6d %-10d %-10d %.1f%%%n", e.id, e.carga, e.capacidad, pct);
         }
-    };
+        System.out.printf("%nCarga final del camión: %d/%d bicis%n", camion.carga, camion.getCapacidad());
+    }
 }

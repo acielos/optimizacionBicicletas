@@ -89,8 +89,6 @@ public class Main {
                                 System.out.println(" **** Greedy **** ");
                                 Algoritmo greedy = new Greedy(dataset);
                                 greedy.run();
-                                System.out.println(" ");
-                                System.out.println(greedy.distanciaRecorrida);
                                 break;
                             case 2:
                                 System.out.println(" **** Búsqueda Aleatoria **** ");

@@ -15,6 +15,12 @@ public class BusquedaAleatoria extends Algoritmo {
             // Generamos la semilla que vamos a utilizar
             Random rand = new Random(this.semilla[i]);
 
+            // Reseteamos variables
+            double mejorFO = Double.POSITIVE_INFINITY;
+            double mejorE = 0.0;
+
+            this.recorrido.clear();
+
             // Hacemos una copia del dataset que es la que vamos a utlizar para la mezcla
             List<Estacion> copiaLista = Dataset.copiaDataset(this.listaEstaciones);
 
@@ -28,17 +34,39 @@ public class BusquedaAleatoria extends Algoritmo {
                 this.distanciaRecorrida = 0;
 
                 // Aquí vamos a calcular la distancia entre puntos de cada una de las 100 mezclas
-                for (int k = 0; k < copiaLista.size()-1; k++) {
-                    this.distanciaRecorrida += distanciaManhattan.calculaDistancia(copiaLista.get(k), copiaLista.get(k+1));
+                this.distanciaRecorrida = distanciaManhattan.calculaCompleto(copiaLista);
+
+                // Vamos ahora a realizar el equilibrado de las estaciones siempre que sea posible
+                for (Estacion estacion : this.recorrido) {
+                    equilibrarEstacion(estacion);
                 }
 
-                // Calculamos la vuelta
-                this.distanciaRecorrida += distanciaManhattan.calculaDistancia(copiaLista.getLast(), copiaLista.getFirst());
+                double entropia = calcularEntropiaTotal(this.recorrido);
+                double funObjetivo = calcularFObjetivo(this.distanciaRecorrida, this.recorrido);
+
+                if (funObjetivo < mejorFO) {
+                    mejorFO = funObjetivo;
+                    this.recorrido = copiaLista;
+                }
+
             }
 
-            // Devolvemos la mejor distancia de la semilla que estemos ejecutando
-            System.out.println(this.distanciaRecorrida);
+            System.out.println("\n--- Resultado Búsqueda Aleatoria ---");
+            System.out.printf("Recorrido: ");
+            for (Estacion e : recorrido) System.out.print(e.id + " ");
+            System.out.println("-> 0");
+
+            System.out.printf("Kilómetros recorridos : %.4f km%n", distanciaRecorrida);
+            System.out.printf("Función objetivo      : %.4f%n", mejorFO);
+            System.out.printf("Evaluaciones          : %d%n", numEvaluaciones);
+
+            System.out.println("\nEstado final de las estaciones:");
+            System.out.printf("%-6s %-10s %-10s %-8s%n", "ID", "Carga", "Capacidad", "% ocup.");
+            for (Estacion e : recorrido) {
+                double pct = 100.0 * e.carga / e.capacidad;
+                System.out.printf("%-6d %-10d %-10d %.1f%%%n", e.id, e.carga, e.capacidad, pct);
+            }
+            System.out.printf("%nCarga final del camión: %d/%d bicis%n", camion.carga, camion.getCapacidad());
         }
     }
-
 }
