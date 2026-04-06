@@ -42,10 +42,13 @@ public abstract class Algoritmo {
     protected List<Estacion> listaEstaciones;
     public Camion camion = new Camion();
 
+    protected Intercambio inter = new Intercambio();
+
     // Semillas para los algoritmos estocásticos (5 ejecuciones)
     protected long[] semilla = {12345L, 67890L, 11111L, 54321L, 99999L};
 
     protected double mejorDistancia = Double.POSITIVE_INFINITY;
+    protected double mejorFuncionObjetivo = Double.POSITIVE_INFINITY;
 
     // Matriz de distancias Manhattan entre todas las estaciones
     protected Double[][] distancias;
@@ -133,18 +136,5 @@ public abstract class Algoritmo {
             camion.carga -= realmenteDa;
         }
         // Si ya está exactamente al 50%, no se hace nada
-    }
-
-    // ─── Distancia total de un recorrido ──────────────────────────────────────
-
-    public double calcularDistanciaRecorrido(List<Estacion> ruta) {
-        double total = 0.0;
-        for (int i = 0; i < ruta.size() - 1; i++) {
-            total += distanciaManhattan.calculaDistancia(ruta.get(i), ruta.get(i + 1));
-        }
-        // Cierre del ciclo: vuelta a la estación 0
-        total += distanciaManhattan.calculaDistancia(
-                ruta.get(ruta.size() - 1), ruta.get(0));
-        return total;
     }
 }

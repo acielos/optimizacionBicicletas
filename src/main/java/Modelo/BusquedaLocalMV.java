@@ -27,7 +27,7 @@ public class BusquedaLocalMV extends Algoritmo {
             vecinos.clear();
 
             // Array para guardar las distancias de los distintos vecinos
-            List<Double> distancias = new ArrayList<>(datasetCopiado.size());
+            List<Double> funcionObjetivo = new ArrayList<>(datasetCopiado.size());
 
             // Reseteamos la mejor distancia
             this.mejorDistancia = Double.POSITIVE_INFINITY;
@@ -57,25 +57,42 @@ public class BusquedaLocalMV extends Algoritmo {
             while(llamadas < 3000 && noMejorado < 1000) {
 
                 // Generamos 200 soluciones
-//                for (int j = 0; j < 200; j++) {
-//                    List<Estacion> vecino = inter.cambiar(Dataset.copiaDataset(mejorVecino));
-//                    distancias.add(distanciaManhattan.calculaCompleto(vecino));
-//                    vecinos.add(vecino);
-//                }
+                for (int j = 0; j < 200; j++) {
+                    List<Estacion> vecino = inter.cambiar(Dataset.copiaDataset(mejorVecino));
+                    double distVecino = distanciaManhattan.calculaCompleto(vecino);
+                    funcionObjetivo.add(calcularFObjetivo(distVecino, vecino));
+                    vecinos.add(vecino);
+                }
 
                 // Comprobamos cual es el mejor vecino encontrado hasta ahora y nos quedamos con el
-                for (int c = 0; c < distancias.size(); c++) {
-                    if (distancias.get(c) < this.mejorDistancia) {
-                        this.mejorDistancia = distancias.get(c);
+                for (int c = 0; c < funcionObjetivo.size(); c++) {
+                    if (funcionObjetivo.get(c) < this.mejorDistancia) {
+                        this.mejorFuncionObjetivo = funcionObjetivo.get(c);
                         mejorVecino = Dataset.copiaDataset(vecinos.get(c));
                     }
                 }
-
                 llamadas++;
             }
 
+            this.distanciaRecorrida = distanciaManhattan.calculaCompleto(mejorVecino);
+
             // Mostramos por pantalla la distancia calculada con cada una de las 5 semillas
-            System.out.println(this.mejorDistancia);
+            System.out.println("\n--- Resultado Búsqueda Local: Mejor Vecino ---");
+            System.out.printf("Recorrido: ");
+            for (Estacion e : recorrido) System.out.print(e.id + " ");
+            System.out.println("-> 0");
+
+            System.out.printf("Kilómetros recorridos : %.4f km%n", distanciaRecorrida);
+            System.out.printf("Función objetivo      : %.4f%n", this.mejorFuncionObjetivo);
+            System.out.printf("Evaluaciones          : %d%n", numEvaluaciones);
+
+            System.out.println("\nEstado final de las estaciones:");
+            System.out.printf("%-6s %-10s %-10s %-8s%n", "ID", "Carga", "Capacidad", "% ocup.");
+            for (Estacion e : recorrido) {
+                double pct = 100.0 * e.carga / e.capacidad;
+                System.out.printf("%-6d %-10d %-10d %.1f%%%n", e.id, e.carga, e.capacidad, pct);
+            }
+            System.out.printf("%nCarga final del camión: %d/%d bicis%n", camion.carga, camion.getCapacidad());
         }
     }
 }

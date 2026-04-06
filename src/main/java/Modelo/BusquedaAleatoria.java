@@ -11,13 +11,14 @@ public class BusquedaAleatoria extends Algoritmo {
 
     public void run(){
 
+        List<Estacion> lista1n = new ArrayList<>();
+
         for (int i = 0; i < 5; i++) {
             // Generamos la semilla que vamos a utilizar
             Random rand = new Random(this.semilla[i]);
 
             // Reseteamos variables
-            double mejorFO = Double.POSITIVE_INFINITY;
-            double mejorE = 0.0;
+            this.mejorFuncionObjetivo = Double.POSITIVE_INFINITY;
 
             this.recorrido.clear();
 
@@ -28,36 +29,47 @@ public class BusquedaAleatoria extends Algoritmo {
             this.distanciaRecorrida = 0;
 
             for (int j = 0; j < 100; j++) {
+                lista1n.clear();
+                lista1n = Dataset.copiaDataset(copiaLista.subList(1, copiaLista.size()));
+
                 // Generamos la copia "remezclada" de nuestro dataset
-                Collections.shuffle(copiaLista, rand);
+                Collections.shuffle(lista1n, rand);
+
+                lista1n.addFirst(copiaLista.getFirst());
+
+                this.recorrido = Dataset.copiaDataset(lista1n);
+
                 // Definimos la distancia a 0 ara cada iteración de cada semilla
                 this.distanciaRecorrida = 0;
 
                 // Aquí vamos a calcular la distancia entre puntos de cada una de las 100 mezclas
-                this.distanciaRecorrida = distanciaManhattan.calculaCompleto(copiaLista);
+                this.distanciaRecorrida = distanciaManhattan.calculaCompleto(lista1n);
 
                 // Vamos ahora a realizar el equilibrado de las estaciones siempre que sea posible
-                for (Estacion estacion : this.recorrido) {
-                    equilibrarEstacion(estacion);
+                for (int k = 0; k < this.recorrido.size(); k++) {
+                    equilibrarEstacion(this.recorrido.get(k));
                 }
 
-                double entropia = calcularEntropiaTotal(this.recorrido);
+                // double entropia = calcularEntropiaTotal(this.recorrido);
                 double funObjetivo = calcularFObjetivo(this.distanciaRecorrida, this.recorrido);
 
-                if (funObjetivo < mejorFO) {
-                    mejorFO = funObjetivo;
-                    this.recorrido = copiaLista;
+                if (funObjetivo < this.mejorFuncionObjetivo) {
+                    this.mejorFuncionObjetivo = funObjetivo;
+                    this.recorrido = lista1n;
+                    this.distanciaRecorrida = distanciaManhattan.calculaCompleto(lista1n);
                 }
 
             }
+
+
 
             System.out.println("\n--- Resultado Búsqueda Aleatoria ---");
             System.out.printf("Recorrido: ");
             for (Estacion e : recorrido) System.out.print(e.id + " ");
             System.out.println("-> 0");
 
-            System.out.printf("Kilómetros recorridos : %.4f km%n", distanciaRecorrida);
-            System.out.printf("Función objetivo      : %.4f%n", mejorFO);
+            System.out.printf("Kilómetros recorridos : %.4f km%n", this.distanciaRecorrida);
+            System.out.printf("Función objetivo      : %.4f%n", this.mejorFuncionObjetivo);
             System.out.printf("Evaluaciones          : %d%n", numEvaluaciones);
 
             System.out.println("\nEstado final de las estaciones:");
