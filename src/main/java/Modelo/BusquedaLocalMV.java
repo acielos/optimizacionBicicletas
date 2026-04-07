@@ -6,7 +6,7 @@ import java.util.*;
 public class BusquedaLocalMV extends Algoritmo {
 
     // Constructor de la clase
-    public BusquedaLocalMV(List<Estacion> dataset){
+    public BusquedaLocalMV(List<Estacion> dataset) {
         this.listaEstaciones = dataset;
     }
 
@@ -14,14 +14,15 @@ public class BusquedaLocalMV extends Algoritmo {
     @Override
     public void run() {
 
-        // Vamos a trabajar con una copia del dataset, para que no se lie
-        List<Estacion> datasetCopiado = Dataset.copiaDataset(this.listaEstaciones);
-
-
         for (int i = 0; i < 5; i++) {
+            // Vamos a trabajar con una copia del dataset, para que no se lie
+            List<Estacion> datasetCopiado = Dataset.copiaDataset(this.listaEstaciones);
 
             // Creamos el array en el que guardaremos las soluciones de los vecinos
-            List<List<Estacion>> vecinos = new ArrayList<>(datasetCopiado.size());
+            List<List<Estacion>> vecinos = new ArrayList<>();
+
+            // Creamos un array donde guardaremos el resultado de cada vecino para la FO
+            List<List<Estacion>> vecinosFO = new ArrayList<>();
 
             // Limpiamos para cada ejecución
             vecinos.clear();
@@ -29,14 +30,16 @@ public class BusquedaLocalMV extends Algoritmo {
             // Array para guardar las distancias de los distintos vecinos
             List<Double> funcionObjetivo = new ArrayList<>(datasetCopiado.size());
 
-            // Reseteamos la mejor distancia
-            this.mejorDistancia = Double.POSITIVE_INFINITY;
+            // Reseteamos
+            this.mejorFuncionObjetivo = Double.POSITIVE_INFINITY;
+            this.numEvaluaciones = 0;
+            this.camion.carga = 7;
 
             // Para la semilla
             Random rand = new Random(this.semilla[i]);
 
             // Vamos a mezclarlo (a excepción de la primera estación) para nuestra solución inicial
-            List<Estacion> mezclado = datasetCopiado.subList(1, this.listaEstaciones.size());
+            List<Estacion> mezclado = new ArrayList<>(datasetCopiado.subList(1, this.listaEstaciones.size()));
 
             // Mezclamos todas menos la primera
             Collections.shuffle(mezclado, rand);
@@ -45,39 +48,107 @@ public class BusquedaLocalMV extends Algoritmo {
             mezclado.addFirst(datasetCopiado.getFirst());
 
             // Hacemos una copia del dataset donde iremos guardando el mejor vecino hasta el momento
-            List<Estacion> mejorVecino = Dataset.copiaDataset(mezclado);
+            List<Estacion> mejorVecino = new ArrayList<>(mezclado);
+
+            //Recomponemos la solución para asegurar que estaciones y cargas vayan en conjunto
+            List<Estacion> inicialEquilibrada = Dataset.copiaDataset(this.listaEstaciones);
+            List<Estacion> inicialOrdenado = new ArrayList<>();
+            for (Estacion estacionOrden : mejorVecino) {
+                for (Estacion estacion : inicialEquilibrada) {
+                    if (estacion.id == estacionOrden.id) {
+                        inicialOrdenado.add(estacion);
+                    }
+                }
+            }
+
+            // Equilibramos nuestra solucion inicial
+            for (Estacion e : inicialOrdenado) {
+                equilibrarEstacion(e);
+            }
+
+            // Empezamos a calcular/guardar valores de nuestra sol inicial
+            double kmsInicial = distanciaManhattan.calculaCompleto(inicialOrdenado);
+            this.mejorFuncionObjetivo = calcularFObjetivo(kmsInicial, inicialOrdenado);
+            this.recorrido = inicialOrdenado;
+            this.distanciaRecorrida = kmsInicial;
+            this.entropiaFinal = calcularEntropiaTotal(inicialOrdenado);
+
+            // Para comprobar si mejora o no
+            boolean mejoro = true;
 
             // "Número" de llamadas a la función objetivo
             int llamadas = 0;
 
-            // Para comprobar si mejora o no
-            int noMejorado = 0;
-
             List<Estacion> vecino = new ArrayList<>(datasetCopiado.size());
 
             // Una vez lo tenemos todo, vamos a proceder a la parte interesante del algoritmo
-            while(llamadas < 3000) {
+            while (numEvaluaciones < 3000 && mejoro) {
 
-                // Generamos 200 soluciones
-                for (int j = 0; j < 200; j++) {
-                    vecino.clear();
-                    vecino = inter.cambiar(Dataset.copiaDataset(mejorVecino));
-                    double distVecino = distanciaManhattan.calculaCompleto(vecino);
-                    funcionObjetivo.add(calcularFObjetivo(distVecino, vecino));
-                    vecinos.add(vecino);
-                }
+                // por si a caso
+                mejoro = false;
+                vecinos.clear();
+                funcionObjetivo.clear();
+                this.camion.carga = 7;
 
-                // Comprobamos cual es el mejor vecino encontrado hasta ahora y nos quedamos con el
-                for (int c = 0; c < funcionObjetivo.size(); c++) {
-                    if (funcionObjetivo.get(c) < this.mejorDistancia) {
-                        this.mejorFuncionObjetivo = funcionObjetivo.get(c);
-                        mejorVecino = Dataset.copiaDataset(vecinos.get(c));
+                // Preparamos nuestras variables para los vecinos
+                double mejorFOLocal = this.mejorFuncionObjetivo;
+                double mejorDistanciaLocal = this.mejorDistancia;
+                double mejorEntropiaLocal = this.entropiaFinal;
+                List<Estacion> mejorVecinoGlobal = null;
+
+                for (int l = 1; l < mejorVecino.size(); l++) {
+                    for (int m = 1; m < mejorVecino.size(); m++) {
+
+                        //
+                        List<Estacion> vecinoOrden = new ArrayList<>(mejorVecino);
+                        Collections.swap(vecinoOrden, l, m);
+
+                        // Para cada iteracion
+                        this.camion.carga = 7;
+
+                        // Reconstruir desde el estado original
+                        List<Estacion> copia = Dataset.copiaDataset(this.listaEstaciones);
+                        List<Estacion> vecinoEquilibrado = new ArrayList<>();
+                        for (Estacion estacion : vecinoOrden) {
+                            for (Estacion estacionEquilibrado : copia) {
+                                if (estacion.id == estacionEquilibrado.id) {
+                                    vecinoEquilibrado.add(estacionEquilibrado);
+                                }
+                            }
+                        }
+
+                        // Equilibramos nuestras estaciones
+                        for (Estacion e : vecinoEquilibrado) {
+                            equilibrarEstacion(e);
+                        }
+
+                        // Hacemos los calculos de este vecino
+                        double distanciaVecino = distanciaManhattan.calculaCompleto(vecinoEquilibrado);
+                        double funcionObjetivoVecino = calcularFObjetivo(distanciaVecino, vecinoEquilibrado);
+
+                        // Añadimos sus calculos a nuestras listas de vecinos
+                        funcionObjetivo.add(funcionObjetivoVecino);
+                        vecinos.add(vecinoEquilibrado);
+
+                        if (funcionObjetivoVecino < mejorFOLocal) {
+                            mejorFOLocal = funcionObjetivoVecino;
+                            mejorVecinoGlobal = vecinoEquilibrado;
+                            mejorDistanciaLocal = distanciaVecino;
+                            mejorEntropiaLocal = calcularEntropiaTotal(vecinoEquilibrado);
+                            mejoro = true;
+                        }
                     }
                 }
-                llamadas++;
-            }
 
-            this.distanciaRecorrida = distanciaManhattan.calculaCompleto(mejorVecino);
+                if (mejoro) {
+                    mejorVecino = mejorVecinoGlobal;
+                    this.mejorFuncionObjetivo = mejorFOLocal;
+                    this.recorrido = mejorVecinoGlobal;
+                    this.distanciaRecorrida = mejorDistanciaLocal;
+                    this.entropiaFinal = mejorEntropiaLocal;
+                }
+
+            }
 
             // Mostramos por pantalla la distancia calculada con cada una de las 5 semillas
             System.out.println("\n--- Resultado Búsqueda Local: Mejor Vecino ---");
@@ -89,12 +160,13 @@ public class BusquedaLocalMV extends Algoritmo {
             System.out.printf("Función objetivo      : %.4f%n", this.mejorFuncionObjetivo);
             System.out.printf("Evaluaciones          : %d%n", numEvaluaciones);
 
-            System.out.println("\nEstado final de las estaciones:");
-            System.out.printf("%-6s %-10s %-10s %-8s%n", "ID", "Carga", "Capacidad", "% ocup.");
-            for (Estacion e : recorrido) {
-                double pct = 100.0 * e.carga / e.capacidad;
-                System.out.printf("%-6d %-10d %-10d %.1f%%%n", e.id, e.carga, e.capacidad, pct);
-            }
+            // Si queremos mostrar, pero ahora no
+//            System.out.println("\nEstado final de las estaciones:");
+//            System.out.printf("%-6s %-10s %-10s %-8s%n", "ID", "Carga", "Capacidad", "% ocup.");
+//            for (Estacion e : recorrido) {
+//                double pct = 100.0 * e.carga / e.capacidad;
+//                System.out.printf("%-6d %-10d %-10d %.1f%%%n", e.id, e.carga, e.capacidad, pct);
+//            }
             System.out.printf("%nCarga final del camión: %d/%d bicis%n", camion.carga, camion.getCapacidad());
         }
     }

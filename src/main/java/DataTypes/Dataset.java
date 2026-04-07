@@ -75,9 +75,19 @@ public class Dataset {
     }
 
     // Método para copiar los datasets
+    // public static List<Estacion> copiaDataset(List<Estacion> dataset) { return new ArrayList<>(dataset);}
+
     public static List<Estacion> copiaDataset(List<Estacion> dataset) {
-        return new ArrayList<>(dataset);
+        List<Estacion> copia = new ArrayList<>(dataset.size());
+        for (Estacion e : dataset) {
+            Estacion nueva = new Estacion(e.id, e.latitud, e.longitud);
+            nueva.carga     = e.carga;
+            nueva.capacidad = e.capacidad;
+            copia.add(nueva);
+        }
+        return copia;
     }
+
 
 
 }

@@ -19,7 +19,7 @@ public class Main {
 
         // Variables qie lo mismo usamos en varios sitios
         String ruta = "././datasetBicis.tsp";
-        List<Estacion> dataset = new ArrayList<Estacion>();
+        List<Estacion> dataset = new ArrayList<>();
 
         int opcion = 0;
         do {
@@ -117,7 +117,6 @@ public class Main {
                     System.out.println(" **** Greedy **** ");
                     Algoritmo greedy = new Greedy(dataset);
                     greedy.run();
-                    System.out.println(greedy.distanciaRecorrida);
 
                     System.out.println(" **** Búsqueda Aleatoria **** ");
                     Algoritmo busquedaAleatoria = new BusquedaAleatoria(dataset);
@@ -136,8 +135,6 @@ public class Main {
                     System.out.println("\n ***** Finalización del Programa ***** \n");
                     break;
             }
-
-
         }while(opcion!=5);
     }
 }

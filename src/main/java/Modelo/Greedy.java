@@ -12,6 +12,8 @@ public class Greedy extends Algoritmo {
 
     public void run(){
 
+        List<Estacion> copia = Dataset.copiaDataset(this.listaEstaciones);
+
         // Reseteamos por si se hacen varias ejecuciones
         this.distanciaRecorrida = 0.0;
         this.numEvaluaciones = 0;
@@ -26,7 +28,7 @@ public class Greedy extends Algoritmo {
 
         // Declaramos la primera estación del recorrido
         int estActual = 0;
-        this.recorrido.addFirst(listaEstaciones.get(estActual));
+        this.recorrido.addFirst(copia.get(estActual));
         equilibrarEstacion(this.recorrido.getFirst());  // Solo tenemos 1 por ahora, estqria bien asi
 
         // Actualizamos nuestra matriz de distancias para no volver a coger la est. 0
@@ -47,11 +49,8 @@ public class Greedy extends Algoritmo {
                 }
             }
 
-            // Una vez encontrada la mejor, sumamos al recorrido...
-            this.distanciaRecorrida += mejorDistanciaLocal;
-
             // Añadimos la estación a nuestro recorrido
-            this.recorrido.add(listaEstaciones.get(estSiguiente));
+            this.recorrido.addLast(copia.get(estSiguiente));
 
             // Actualizamos variables
             estActual = estSiguiente;
@@ -66,7 +65,8 @@ public class Greedy extends Algoritmo {
         }
 
         // Una vez visitemos todas, tenemos que volver al origen
-        this.distanciaRecorrida += distanciaManhattan.calculaDistancia(this.recorrido.getFirst(),  this.recorrido.getLast());
+        //this.distanciaRecorrida += distanciaManhattan.calculaDistancia(this.recorrido.getFirst(),  this.recorrido.getLast());
+        this.distanciaRecorrida = distanciaManhattan.calculaCompleto(this.recorrido);
 
         // Calculamos la Función Objetivo de nuestro resultado
         double entropia = calcularEntropiaTotal(this.recorrido);
