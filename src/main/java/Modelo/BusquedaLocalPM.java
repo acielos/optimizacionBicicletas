@@ -80,6 +80,7 @@ public class BusquedaLocalPM extends Algoritmo {
                 funcionObjetivo.clear();
                 this.camion.carga = 7;
 
+                // Para salir aqui cuando sea 1
                 primero:
                 for (int l = 1; l < mejorVecino.size(); l++) {
                     for (int m = 1; m < mejorVecino.size(); m++) {
