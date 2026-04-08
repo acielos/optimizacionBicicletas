@@ -72,6 +72,9 @@ public class Greedy extends Algoritmo {
         double entropia = calcularEntropiaTotal(this.recorrido);
         double funObjetivo = calcularFObjetivo(this.distanciaRecorrida, this.recorrido);
 
+        this.mejorFuncionObjetivo = funObjetivo;
+        this.fObjetivo = funObjetivo;
+
 
         System.out.println("\n--- Resultado Greedy ---");
         System.out.printf("Recorrido: ");

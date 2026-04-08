@@ -15,11 +15,12 @@ public class EnfriamientoSimulado extends Algoritmo {
     public void run() {
 
         for (int i = 0; i < 5; i++) {
-            this.camion.carga = 7;
             this.numEvaluaciones = 0;
             double TemperaturaInicial = 0;
-            int maxVecinos = 30;
-            int enfriamientos = 100;
+
+            // Pruebas
+            int maxVecinos = 20;
+            int enfriamientos = 80;
 
             // Mejores valores encontrado
             double mejorKmsGlobal = 0;
@@ -32,42 +33,42 @@ public class EnfriamientoSimulado extends Algoritmo {
             List<Double> entropiaHistorico = new ArrayList<>();
             List<Double> foHistorico = new ArrayList<>();
 
-            // Generamos solucion inicial
-            List<Estacion> inicialSol = Dataset.copiaDataset(this.listaEstaciones);
-
-            // Mezclamos menos la primera
-            List<Estacion> mezclado = Dataset.copiaDataset(inicialSol.subList(1,  inicialSol.size()));
-
             // Para las semillas
             Random rand = new Random(this.semilla[i]);
 
-            // Mezclamos todas menos la primera
+            // Generamos solucion inicial con Greedy
+            Algoritmo greedy = new Greedy(this.listaEstaciones);
+            greedy.run();
+            double costeGreedy = greedy.mejorFuncionObjetivo;
+            double kmsGreedy = greedy.distanciaRecorrida;
+            List<Estacion> recorridoGredyCop = Dataset.copiaDataset(greedy.recorrido);
+
+            // Calculamso temperatura inicial
+            TemperaturaInicial = calcularTemperaturaInicial(costeGreedy);
+
+            List<Estacion> mezclado = Dataset.copiaDataset(recorridoGredyCop.subList(1, recorridoGredyCop.size() - 1));
             Collections.shuffle(mezclado, rand);
+            mezclado.addFirst(this.listaEstaciones.getFirst());
+            List<Estacion> solucionActual = recomponer(mezclado);
 
-            // Unimos de nuevo todo
-            mezclado.addFirst(inicialSol.getFirst());
 
-            // Hacemos una copia del dataset donde iremos guardando el mejor vecino hasta el momento
-            List<Estacion> mejorVecino = Dataset.copiaDataset(mezclado);
+//            // Para cada semilla, hacemos un pequeño cambio para que no partan de la misma misma solucion
+//            int p1 = 1 + rand.nextInt(solucionActual.size() - 1);
+//            int p2 = 1 + rand.nextInt(solucionActual.size() - 1);
+//            while (p1 == p2) p2 = 1 + rand.nextInt(solucionActual.size() - 1);
+//            Collections.swap(solucionActual, p1, p2);
 
-            //Recomponemos la solución para asegurar que estaciones y cargas vayan en conjunto
-            List<Estacion> solucionActual = recomponer(mejorVecino);
 
-            // Empezamos a calcular/guardar valores de nuestra sol inicial
+            // Calculamos los datos de nuestra solucion actual
             double kmsActual = distanciaManhattan.calculaCompleto(solucionActual);
             double foLocal = calcularFObjetivo(kmsActual, solucionActual);
             double entropiaLocal = calcularEntropiaTotal(solucionActual);
 
-            mejorVecinoGlobal = Dataset.copiaDataset(mejorVecino);
-            mejorFOGlobal = foLocal;
+            mejorVecinoGlobal   = Dataset.copiaDataset(solucionActual);
+            mejorFOGlobal       = foLocal;
+            mejorKmsGlobal      = kmsActual;
             mejorEntropiaGlobal = entropiaLocal;
 
-            // Para calcular la temperatura, ejecutamos un greedy
-            Algoritmo greedy = new Greedy(this.listaEstaciones);
-            greedy.run();
-            double costeGreedy = greedy.mejorFuncionObjetivo;
-
-            TemperaturaInicial = calcularTemperaturaInicial(costeGreedy);
 
             // Pasamos a la parte con chicha
             for (int k = 0; k < enfriamientos; k++) {
@@ -77,7 +78,7 @@ public class EnfriamientoSimulado extends Algoritmo {
                 // Pasamos a generar vecinos (segun tk)
                 for (int  l = 0; l < maxVecinos; l++) {
                     // Generamos un vecino
-                    int n = this.listaEstaciones.size();
+                    int n = this.listaEstaciones.size()-1;
                     int pos1 = 1 + rand.nextInt(n-1);
                     int pos2 = 1 + rand.nextInt(n-1);
 
@@ -114,6 +115,7 @@ public class EnfriamientoSimulado extends Algoritmo {
                             mejorVecinoGlobal = vecinosEquilibrados;
                             mejorEntropiaGlobal = entropiaLocal;
                             mejorKmsGlobal = kmsActual;
+                            System.out.printf("  → Nueva mejor [k=%d, l=%d] FO=%.4f%n", k, l, mejorFOGlobal);
                         }
                     }
                 }
@@ -125,7 +127,14 @@ public class EnfriamientoSimulado extends Algoritmo {
             }
             List<Estacion> mejorSolucionFinal = recomponer(mejorVecinoGlobal); // que el camion da problemas...
 
-            this.recorrido = mejorVecinoGlobal;
+            if (costeGreedy < mejorFOGlobal) {
+                mejorSolucionFinal = recomponer(Dataset.copiaDataset(recorridoGredyCop));
+                mejorFOGlobal = costeGreedy;
+                mejorKmsGlobal = greedy.distanciaRecorrida;
+                mejorEntropiaGlobal = calcularEntropiaTotal(mejorSolucionFinal);
+            }
+
+            this.recorrido = mejorSolucionFinal;
             this.mejorFuncionObjetivo = mejorFOGlobal;
             this.distanciaRecorrida = mejorKmsGlobal;
             this.entropiaFinal = mejorEntropiaGlobal;
@@ -156,7 +165,9 @@ public class EnfriamientoSimulado extends Algoritmo {
     }
 
     private double calcularTemperaturaInicial(double costeGreedy){
-        double temperatura = (-0.3 * costeGreedy / Math.log(0.3));
+        double mu = 0.2;
+        double phi = 0.8;
+        double temperatura = (-mu * costeGreedy) / Math.log(phi);
         return temperatura;
     }
 }
