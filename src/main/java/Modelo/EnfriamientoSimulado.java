@@ -51,14 +51,6 @@ public class EnfriamientoSimulado extends Algoritmo {
             mezclado.addFirst(this.listaEstaciones.getFirst());
             List<Estacion> solucionActual = recomponer(mezclado);
 
-
-//            // Para cada semilla, hacemos un pequeño cambio para que no partan de la misma misma solucion
-//            int p1 = 1 + rand.nextInt(solucionActual.size() - 1);
-//            int p2 = 1 + rand.nextInt(solucionActual.size() - 1);
-//            while (p1 == p2) p2 = 1 + rand.nextInt(solucionActual.size() - 1);
-//            Collections.swap(solucionActual, p1, p2);
-
-
             // Calculamos los datos de nuestra solucion actual
             double kmsActual = distanciaManhattan.calculaCompleto(solucionActual);
             double foLocal = calcularFObjetivo(kmsActual, solucionActual);
@@ -100,9 +92,9 @@ public class EnfriamientoSimulado extends Algoritmo {
                     // Vamos a ver si aceptamos o no aceptamos al vecino
                     double calculoFO = funcionObjetivoVecino - foLocal;
 
-                    boolean aceptar = calculoFO < 0 || rand.nextDouble() < Math.exp(-calculoFO/Tk);
+                    //boolean aceptar = calculoFO < 0 || rand.nextDouble() < Math.exp(-calculoFO/Tk);
 
-                    if (aceptar) {
+                    if (calculoFO < 0 || rand.nextDouble() < Math.exp(-calculoFO/Tk)) {
                         solucionActual = Dataset.copiaDataset(vecinosEquilibrados);
                         foLocal = funcionObjetivoVecino;
                         kmsActual = kmsVecinoActual;
@@ -115,7 +107,6 @@ public class EnfriamientoSimulado extends Algoritmo {
                             mejorVecinoGlobal = vecinosEquilibrados;
                             mejorEntropiaGlobal = entropiaLocal;
                             mejorKmsGlobal = kmsActual;
-                            System.out.printf("  → Nueva mejor [k=%d, l=%d] FO=%.4f%n", k, l, mejorFOGlobal);
                         }
                     }
                 }

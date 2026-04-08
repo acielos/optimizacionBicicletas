@@ -48,27 +48,14 @@ public class BusquedaLocalMV extends Algoritmo {
             List<Estacion> mejorVecino = new ArrayList<>(mezclado);
 
             //Recomponemos la solución para asegurar que estaciones y cargas vayan en conjunto
-            List<Estacion> inicialEquilibrada = Dataset.copiaDataset(this.listaEstaciones);
-            List<Estacion> inicialOrdenado = new ArrayList<>();
-            for (Estacion estacionOrden : mejorVecino) {
-                for (Estacion estacion : inicialEquilibrada) {
-                    if (estacion.id == estacionOrden.id) {
-                        inicialOrdenado.add(estacion);
-                    }
-                }
-            }
-
-            // Equilibramos nuestra solucion inicial
-            for (Estacion e : inicialOrdenado) {
-                equilibrarEstacion(e);
-            }
+            List<Estacion> inicialEquilibrada = recomponer(mejorVecino);
 
             // Empezamos a calcular/guardar valores de nuestra sol inicial
-            double kmsInicial = distanciaManhattan.calculaCompleto(inicialOrdenado);
-            this.mejorFuncionObjetivo = calcularFObjetivo(kmsInicial, inicialOrdenado);
-            this.recorrido = inicialOrdenado;
+            double kmsInicial = distanciaManhattan.calculaCompleto(inicialEquilibrada);
+            this.mejorFuncionObjetivo = calcularFObjetivo(kmsInicial, inicialEquilibrada);
+            this.recorrido = inicialEquilibrada;
             this.distanciaRecorrida = kmsInicial;
-            this.entropiaFinal = calcularEntropiaTotal(inicialOrdenado);
+            this.entropiaFinal = calcularEntropiaTotal(inicialEquilibrada);
 
             // Para comprobar si mejora o no
             boolean mejoro = true;
@@ -99,20 +86,8 @@ public class BusquedaLocalMV extends Algoritmo {
                         this.camion.carga = 7;
 
                         // Reconstruir desde el estado original
-                        List<Estacion> copia = Dataset.copiaDataset(this.listaEstaciones);
-                        List<Estacion> vecinoEquilibrado = new ArrayList<>();
-                        for (Estacion estacion : vecinoOrden) {
-                            for (Estacion estacionEquilibrado : copia) {
-                                if (estacion.id == estacionEquilibrado.id) {
-                                    vecinoEquilibrado.add(estacionEquilibrado);
-                                }
-                            }
-                        }
+                        List<Estacion> vecinoEquilibrado = recomponer(vecinoOrden);
 
-                        // Equilibramos nuestras estaciones
-                        for (Estacion e : vecinoEquilibrado) {
-                            equilibrarEstacion(e);
-                        }
 
                         // Hacemos los calculos de este vecino
                         double distanciaVecino = distanciaManhattan.calculaCompleto(vecinoEquilibrado);
