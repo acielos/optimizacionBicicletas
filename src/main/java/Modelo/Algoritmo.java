@@ -46,10 +46,6 @@ public abstract class Algoritmo {
         }
     }
 
-    /**
-     * Fobj = Kms + alpha * (N - Entropía)
-     * Penalizamos la falta de entropía: cuanto más lejos del máximo (N), peor.
-     */
     public double calcularFObjetivo(double kms, List<Estacion> estaciones) {
         numEvaluaciones++;
         double entropia  = calcularEntropiaTotal(estaciones);
@@ -86,5 +82,30 @@ public abstract class Algoritmo {
             est.carga += realmenteDa;
             camion.carga -= realmenteDa;
         }
+    }
+
+    protected List<Estacion> recomponer(List<Estacion> dataset){
+        // Aseguramos la carga del camión correcta
+        this.camion.carga = 7;
+
+        // Realizamos una copia del dataset
+        List<Estacion> copia = Dataset.copiaDataset(dataset);
+
+        // Reordenamos para que el orden sea el correcto de las visitas
+        List<Estacion> resultado = new ArrayList<>();
+
+        for (Estacion orden : dataset){
+            for (Estacion estacion : copia){
+                if (estacion.id == orden.id){
+                    resultado.add(estacion);
+                }
+            }
+        }
+
+        for (Estacion e : resultado){
+            equilibrarEstacion(e);
+        }
+
+        return resultado;
     }
 }

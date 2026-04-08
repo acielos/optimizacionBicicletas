@@ -106,6 +106,9 @@ public class Main {
                                 busquedaLocalPM.run();
                                 break;
                             case 5:
+                                System.out.println(" **** Enfriamiento Simulado **** ");
+                                Algoritmo enfriamientoSimulado = new EnfriamientoSimulado(dataset);
+                                enfriamientoSimulado.run();
                                 break;
                             case 6:
                                 break;
@@ -130,6 +133,13 @@ public class Main {
                     Algoritmo busquedaLocalPM = new BusquedaLocalPM(dataset);
                     busquedaLocalPM.run();
 
+                    System.out.println(" **** Enfriamiento Simulado **** ");
+                    Algoritmo enfriamientoSimulado = new EnfriamientoSimulado(dataset);
+                    enfriamientoSimulado.run();
+
+//                    System.out.println(" **** Búsqueda Tabú **** ");
+//                    Algoritmo busquedaTabu = new BusquedaTabu(dataset, 200);
+//                    busquedaTabu.run();
                     break;
                 case 5:
                     System.out.println("\n ***** Finalización del Programa ***** \n");

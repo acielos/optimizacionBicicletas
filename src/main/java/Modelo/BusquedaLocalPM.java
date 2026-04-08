@@ -67,11 +67,6 @@ public class BusquedaLocalPM extends Algoritmo {
             // Para comprobar si mejora o no
             boolean mejoro = true;
 
-            // "Número" de llamadas a la función objetivo
-            int llamadas = 0;
-
-            List<Estacion> vecino = new ArrayList<>(datasetCopiado.size());
-
             // Una vez lo tenemos todo, vamos a proceder a la parte interesante del algoritmo
             while (numEvaluaciones < 3000 && mejoro) {
 

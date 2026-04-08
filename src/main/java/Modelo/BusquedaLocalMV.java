@@ -21,9 +21,6 @@ public class BusquedaLocalMV extends Algoritmo {
             // Creamos el array en el que guardaremos las soluciones de los vecinos
             List<List<Estacion>> vecinos = new ArrayList<>();
 
-            // Creamos un array donde guardaremos el resultado de cada vecino para la FO
-            List<List<Estacion>> vecinosFO = new ArrayList<>();
-
             // Limpiamos para cada ejecución
             vecinos.clear();
 
@@ -75,11 +72,6 @@ public class BusquedaLocalMV extends Algoritmo {
 
             // Para comprobar si mejora o no
             boolean mejoro = true;
-
-            // "Número" de llamadas a la función objetivo
-            int llamadas = 0;
-
-            List<Estacion> vecino = new ArrayList<>(datasetCopiado.size());
 
             // Una vez lo tenemos todo, vamos a proceder a la parte interesante del algoritmo
             while (numEvaluaciones < 3000 && mejoro) {

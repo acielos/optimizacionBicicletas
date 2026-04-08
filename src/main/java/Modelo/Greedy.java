@@ -82,12 +82,12 @@ public class Greedy extends Algoritmo {
         System.out.printf("Función objetivo      : %.4f%n", funObjetivo);
         System.out.printf("Evaluaciones          : %d%n", numEvaluaciones);
 
-        System.out.println("\nEstado final de las estaciones:");
-        System.out.printf("%-6s %-10s %-10s %-8s%n", "ID", "Carga", "Capacidad", "% ocup.");
-        for (Estacion e : recorrido) {
-            double pct = 100.0 * e.carga / e.capacidad;
-            System.out.printf("%-6d %-10d %-10d %.1f%%%n", e.id, e.carga, e.capacidad, pct);
-        }
+//        System.out.println("\nEstado final de las estaciones:");
+//        System.out.printf("%-6s %-10s %-10s %-8s%n", "ID", "Carga", "Capacidad", "% ocup.");
+//        for (Estacion e : recorrido) {
+//            double pct = 100.0 * e.carga / e.capacidad;
+//            System.out.printf("%-6d %-10d %-10d %.1f%%%n", e.id, e.carga, e.capacidad, pct);
+//        }
         System.out.printf("%nCarga final del camión: %d/%d bicis%n", camion.carga, camion.getCapacidad());
     }
 }
