@@ -21,8 +21,9 @@ public class EnfriamientoSimulado extends Algoritmo {
             this.numEvaluaciones = 0;
             this.historialExplotacion.clear();
 
+            // Mejores
             int maxVecinos = 20;
-            int enfriamiento = 80;
+            int enfriamiento = 70;
 
             Random rand = new Random(this.semilla[i]);
             int tam = this.listaEstaciones.size();
@@ -75,29 +76,37 @@ public class EnfriamientoSimulado extends Algoritmo {
             double temperaturaInicial = (-0.1 * foActual) / Math.log(0.3);
 
             for (int k = 0; k < enfriamiento; k++) {
-                double Tk = temperaturaInicial / (1 + k);  // Cauchy: T disminuye con 1/k
+                double Tk = temperaturaInicial / (1 + k);
+
                 for (int l = 0; l < maxVecinos; l++) {
-                    // Generar dos posiciones distintas en [1, n-2] (excluimos 0 y última)
+                    // Dos posiciones aleatorias
                     int p1 = 1 + rand.nextInt(tam - 2);
                     int p2 = 1 + rand.nextInt(tam - 2);
-                    while (p1 == p2) p2 = 1 + rand.nextInt(tam - 2);
-                    // Copiar solución actual y aplicar swap
+                    while (p1 == p2){
+                        p2 = 1 + rand.nextInt(tam - 2);
+                    }
+
+                    // Cambiamos las pos
                     List<Estacion> ordenVecino = new ArrayList<>(solActual);
                     Collections.swap(ordenVecino, p1, p2);
-                    // Reconstruir con cargas equilibradas
+
                     List<Estacion> vecinoEq = recomponer(ordenVecino);
-                    // Evaluar el vecino
+
+
+                    // Vemos el vecino
                     double kmsVecino = distanciaManhattan.calculaCompleto(vecinoEq);
                     double entropiaVecino = calcularEntropiaTotal(vecinoEq);
                     double foVecino = calcularFObjetivo(kmsVecino, vecinoEq);
                     double delta = foVecino - foActual;
-                    // Criterio de aceptación: mejora siempre, empeora con prob Boltzmann
+
+                    // Vemos si lo aceptamos o no
                     if (delta < 0 || rand.nextDouble() < Math.exp(-delta / Tk)) {
                         solActual = Dataset.copiaDataset(vecinoEq);
                         foActual = foVecino;
                         kmActual = kmsVecino;
                         enActual = entropiaVecino;
-                        // Actualizar mejor global si corresponde
+
+                        // Vemos si hay que actualizat
                         if (foActual < mejorFOGlobal) {
                             mejorFOGlobal = foActual;
                             mejorKMGlobal = kmActual;

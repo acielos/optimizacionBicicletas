@@ -127,12 +127,12 @@ public abstract class Algoritmo {
         System.out.printf("%nCarga final del camión: %d/%d bicis%n", this.camion.carga, this.camion.getCapacidad());
 
 
-        System.out.println("\nEstado final de las estaciones:");
-        System.out.printf("%-6s %-10s %-10s %-8s%n", "ID", "Carga", "Capacidad", "% ocup.");
-        for (Estacion e : recorrido) {
-            double pct = 100.0 * e.carga / e.capacidad;
-            System.out.printf("%-6d %-10d %-10d %.1f%%%n", e.id, e.carga, e.capacidad, pct);
-        }
+//        System.out.println("\nEstado final de las estaciones:");
+//        System.out.printf("%-6s %-10s %-10s %-8s%n", "ID", "Carga", "Capacidad", "% ocup.");
+//        for (Estacion e : recorrido) {
+//            double pct = 100.0 * e.carga / e.capacidad;
+//            System.out.printf("%-6d %-10d %-10d %.1f%%%n", e.id, e.carga, e.capacidad, pct);
+//        }
     }
 
     protected void guardarDatos(String algoritmo, int semilla) {
@@ -142,9 +142,9 @@ public abstract class Algoritmo {
             for (double[] punto : historialExplotacion) {
                 pw.printf("%.0f;%.4f;%.4f%n", punto[0], punto[1], punto[2]);
             }
-            System.out.println("[HISTORIAL guardado en: " + nombreFichero + "]");
+            //System.out.println("[HISTORIAL guardado en: " + nombreFichero + "]");
         } catch (java.io.IOException e) {
-            System.err.println("Error guardando historial: " + e.getMessage());
+            //System.err.println("Error guardando historial: " + e.getMessage());
         }
     }
 }
