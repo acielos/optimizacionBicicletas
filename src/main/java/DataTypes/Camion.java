@@ -10,4 +10,6 @@ public class Camion {
     public int getCapacidad() {
         return capacidad;
     }
+
+    public void reset(){this.carga = 7;}
 }

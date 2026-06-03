@@ -6,6 +6,8 @@ import java.io.IOException;
 
 import java.util.*;
 
+// rm -rf out/production/optimizacionBicicletas/
+
 public class Main {
     public static void main(String[] args) throws IOException {
 
@@ -21,7 +23,7 @@ public class Main {
         String ruta = "././datasetBicis.tsp";
         List<Estacion> dataset = new ArrayList<>();
 
-        int opcion = 0;
+        int opcion = -1;
         do {
             System.out.println(" ");
             System.out.println("    Aplicación Gestión de Estaciones");
@@ -30,7 +32,7 @@ public class Main {
             System.out.println("    2. Mostrar Dataset");
             System.out.println("    3. Probar Estrategia");
             System.out.println("    4. Probar Todas las Estrategias");
-            System.out.println("    5. Salir");
+            System.out.println("    0. Salir");
             System.out.println("==========================================");
             System.out.print("    Escoga una opción -> ");
             opcion = sc.nextInt();
@@ -84,68 +86,56 @@ public class Main {
                             System.out.println("** ERROR - POR FAVOR INTRODUZCA UN VALOR VÁLIDO **");
                         }
 
-                        switch (opc3) {
-                            case 1:
-                                System.out.println(" **** Greedy **** ");
-                                Algoritmo greedy = new Greedy(dataset);
-                                greedy.run();
-                                break;
-                            case 2:
-                                System.out.println(" **** Búsqueda Aleatoria **** ");
-                                Algoritmo busquedaAleatoria = new BusquedaAleatoria(dataset);
-                                busquedaAleatoria.run();
-                                break;
-                            case 3:
-                                System.out.println(" **** Búsqueda Local Mejor Vecino **** ");
-                                Algoritmo busquedaLocalMV = new BusquedaLocalMV(dataset);
-                                busquedaLocalMV.run();
-                                break;
-                            case 4:
-                                System.out.println(" **** Búsqueda Local Primer Mejor **** ");
-                                Algoritmo busquedaLocalPM = new BusquedaLocalPM(dataset);
-                                busquedaLocalPM.run();
-                                break;
-                            case 5:
-                                System.out.println(" **** Enfriamiento Simulado **** ");
-                                Algoritmo enfriamientoSimulado = new EnfriamientoSimulado(dataset);
-                                enfriamientoSimulado.run();
-                                break;
-                            case 6:
-                                break;
-                        }
+                        ejecutarAlgoritmo(opc3, dataset);
+
                     } while (opc3 != 0);
 
                     break;
                 case 4:
-                    System.out.println(" **** Greedy **** ");
-                    Algoritmo greedy = new Greedy(dataset);
-                    greedy.run();
-
-                    System.out.println(" **** Búsqueda Aleatoria **** ");
-                    Algoritmo busquedaAleatoria = new BusquedaAleatoria(dataset);
-                    busquedaAleatoria.run();
-
-                    System.out.println(" **** Búsqueda Local Mejor Vecino **** ");
-                    Algoritmo busquedaLocalMV = new BusquedaLocalMV(dataset);
-                    busquedaLocalMV.run();
-
-                    System.out.println(" **** Búsqueda Local Primer Mejor **** ");
-                    Algoritmo busquedaLocalPM = new BusquedaLocalPM(dataset);
-                    busquedaLocalPM.run();
-
-                    System.out.println(" **** Enfriamiento Simulado **** ");
-                    Algoritmo enfriamientoSimulado = new EnfriamientoSimulado(dataset);
-                    enfriamientoSimulado.run();
-
-//                    System.out.println(" **** Búsqueda Tabú **** ");
-//                    Algoritmo busquedaTabu = new BusquedaTabu(dataset, 200);
-//                    busquedaTabu.run();
+                    for (int i = 1; i < 7; i++){
+                        ejecutarAlgoritmo(i, dataset);
+                    }
                     break;
                 case 5:
                     System.out.println("\n ***** Finalización del Programa ***** \n");
                     break;
             }
-        }while(opcion!=5);
+        }while(opcion!=0);
+    }
+
+    private static void ejecutarAlgoritmo(int i, List<Estacion> dataset) {
+        switch (i){
+            case 1:
+                System.out.println(" **** Greedy **** ");
+                Algoritmo greedy = new Greedy(dataset);
+                greedy.run();
+                break;
+            case 2:
+                System.out.println(" **** Búsqueda Aleatoria **** ");
+                Algoritmo busquedaAleatoria = new BusquedaAleatoria(dataset);
+                busquedaAleatoria.run();
+                break;
+            case 3:
+                System.out.println(" **** Búsqueda Local Mejor Vecino **** ");
+                Algoritmo busquedaLocalMV = new BusquedaLocalMV(dataset);
+                busquedaLocalMV.run();
+                break;
+            case 4:
+                System.out.println(" **** Búsqueda Local Primer Mejor **** ");
+                Algoritmo busquedaLocalPM = new BusquedaLocalPM(dataset);
+                busquedaLocalPM.run();
+                break;
+            case 5:
+                System.out.println(" **** Enfriamiento Simulado **** ");
+                Algoritmo enfriamientoSimulado = new EnfriamientoSimulado(dataset);
+                enfriamientoSimulado.run();
+                break;
+            case 6:
+                System.out.println(" **** Búsqueda Tabú **** ");
+                Algoritmo busquedaTabu = new BusquedaTabu(dataset);
+                busquedaTabu.run();
+                break;
+        }
     }
 }
 

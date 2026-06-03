@@ -117,24 +117,7 @@ public class BusquedaLocalMV extends Algoritmo {
 
             }
 
-            // Mostramos por pantalla la distancia calculada con cada una de las 5 semillas
-            System.out.println("\n--- Resultado Búsqueda Local: Mejor Vecino ---");
-            System.out.printf("Recorrido: ");
-            for (Estacion e : recorrido) System.out.print(e.id + " ");
-            System.out.println("-> 0");
-
-            System.out.printf("Kilómetros recorridos : %.4f km%n", distanciaRecorrida);
-            System.out.printf("Función objetivo      : %.4f%n", this.mejorFuncionObjetivo);
-            System.out.printf("Evaluaciones          : %d%n", numEvaluaciones);
-
-            // Si queremos mostrar, pero ahora no
-//            System.out.println("\nEstado final de las estaciones:");
-//            System.out.printf("%-6s %-10s %-10s %-8s%n", "ID", "Carga", "Capacidad", "% ocup.");
-//            for (Estacion e : recorrido) {
-//                double pct = 100.0 * e.carga / e.capacidad;
-//                System.out.printf("%-6d %-10d %-10d %.1f%%%n", e.id, e.carga, e.capacidad, pct);
-//            }
-            System.out.printf("%nCarga final del camión: %d/%d bicis%n", camion.carga, camion.getCapacidad());
+            mostrarResultados("Busqueda Local: Mejor Vecino");
         }
     }
 }

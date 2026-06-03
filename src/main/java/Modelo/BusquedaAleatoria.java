@@ -53,17 +53,7 @@ public class BusquedaAleatoria extends Algoritmo {
             this.entropiaFinal = mejorEntropia;
             this.fObjetivo = this.mejorFuncionObjetivo;
 
-            System.out.printf("%n--- Búsqueda Aleatoria | Semilla %d ---%n", semilla[i]);
-            System.out.print("Recorrido: ");
-            for (Estacion e : recorrido) System.out.print(e.id + " ");
-            System.out.println("-> 0");
-            System.out.printf("Kilómetros recorridos : %.4f km%n", distanciaRecorrida);
-            System.out.printf("Entropía final        : %.4f  (máx. %d)%n",
-                    entropiaFinal, recorrido.size());
-            System.out.printf("Función objetivo      : %.4f%n", fObjetivo);
-            System.out.printf("Evaluaciones          : %d%n", numEvaluaciones);
-            System.out.printf("Carga final camión    : %d/%d bicis%n",
-                    camion.carga, camion.getCapacidad());
+            mostrarResultados("Busqueda Aleatoria");
         }
     }
 }

@@ -9,6 +9,8 @@ public abstract class Algoritmo {
     protected List<Estacion> listaEstaciones;
     public Camion camion = new Camion();
 
+    public List<double[]> historialExplotacion = new ArrayList<>();
+
     protected Intercambio inter = new Intercambio();
 
     // Semillas para los algoritmos
@@ -47,10 +49,14 @@ public abstract class Algoritmo {
     }
 
     public double calcularFObjetivo(double kms, List<Estacion> estaciones) {
+        double alpha = 1.5;
         numEvaluaciones++;
         double entropia  = calcularEntropiaTotal(estaciones);
-        double nEstaciones = estaciones.size();
-        return kms + alpha * (nEstaciones - entropia);
+        double nEstaciones = estaciones.size() -1;
+
+        double fobj = kms + alpha * (nEstaciones - entropia);
+        historialExplotacion.add(new double[]{numEvaluaciones, fobj, mejorFuncionObjetivo});
+        return fobj;
     }
 
     public double calcularEntropiaTotal(List<Estacion> estaciones) {
@@ -89,7 +95,7 @@ public abstract class Algoritmo {
         this.camion.carga = 7;
 
         // Realizamos una copia del dataset
-        List<Estacion> copia = Dataset.copiaDataset(dataset);
+        List<Estacion> copia = Dataset.copiaDataset(this.listaEstaciones);
 
         // Reordenamos para que el orden sea el correcto de las visitas
         List<Estacion> resultado = new ArrayList<>();
@@ -107,5 +113,38 @@ public abstract class Algoritmo {
         }
 
         return resultado;
+    }
+
+    protected void mostrarResultados(String algoritmo){
+        System.out.println("\n--- Resultado " + algoritmo + " ---");
+        System.out.printf("Recorrido: ");
+        for (Estacion e : this.recorrido) System.out.print(e.id + " ");
+        System.out.println("-> 0");
+
+        System.out.printf("Kilómetros recorridos : %.4f km%n", this.distanciaRecorrida);
+        System.out.printf("Función objetivo      : %.4f%n", this.mejorFuncionObjetivo);
+        System.out.printf("Evaluaciones          : %d%n", this.numEvaluaciones);
+        System.out.printf("%nCarga final del camión: %d/%d bicis%n", this.camion.carga, this.camion.getCapacidad());
+
+
+        System.out.println("\nEstado final de las estaciones:");
+        System.out.printf("%-6s %-10s %-10s %-8s%n", "ID", "Carga", "Capacidad", "% ocup.");
+        for (Estacion e : recorrido) {
+            double pct = 100.0 * e.carga / e.capacidad;
+            System.out.printf("%-6d %-10d %-10d %.1f%%%n", e.id, e.carga, e.capacidad, pct);
+        }
+    }
+
+    protected void guardarDatos(String algoritmo, int semilla) {
+        String nombreFichero = "historial_" + algoritmo + "_semilla" + semilla + "_Caso " + ".txt";
+        try (java.io.PrintWriter pw = new java.io.PrintWriter(new java.io.FileWriter(nombreFichero))) {
+            pw.println("eval;fObjActual;mejorFObj");
+            for (double[] punto : historialExplotacion) {
+                pw.printf("%.0f;%.4f;%.4f%n", punto[0], punto[1], punto[2]);
+            }
+            System.out.println("[HISTORIAL guardado en: " + nombreFichero + "]");
+        } catch (java.io.IOException e) {
+            System.err.println("Error guardando historial: " + e.getMessage());
+        }
     }
 }
