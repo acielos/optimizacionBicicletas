@@ -11,10 +11,6 @@ public class EnfriamientoSimulado extends Algoritmo {
         this.listaEstaciones = dataset;
     }
 
-    public EnfriamientoSimulado(List<Estacion> dataset, int maxVecinos, int enfriamiento) {
-        this.listaEstaciones = dataset;
-    }
-
     @Override
     public void run() {
         for (int i = 0; i < 5; i++) {
@@ -28,6 +24,13 @@ public class EnfriamientoSimulado extends Algoritmo {
             Random rand = new Random(this.semilla[i]);
             int tam = this.listaEstaciones.size();
 
+            // Seleccionamos la temp inicial
+            Algoritmo greedy = new Greedy(this.listaEstaciones);
+            greedy.run();
+            double costeGreedy = greedy.mejorFuncionObjetivo;
+            double temperaturaInicial = (-0.1 * costeGreedy) / Math.log(0.3);
+
+            // Construimos una solucion aleatoria
             List<Estacion> copia = Dataset.copiaDataset(this.listaEstaciones);
             List<Estacion> resto = new ArrayList<>(copia.subList(1,  copia.size()));
             Collections.shuffle(resto, rand);
@@ -35,6 +38,7 @@ public class EnfriamientoSimulado extends Algoritmo {
 
             List<Estacion> solActual = recomponer(resto);
 
+            // Evaluamos y guardamos
             double kmActual = distanciaManhattan.calculaCompleto(solActual);
             double enActual = calcularEntropiaTotal(solActual);
             double foActual = calcularFObjetivo(kmActual, solActual);
@@ -72,8 +76,6 @@ public class EnfriamientoSimulado extends Algoritmo {
 //                double tasa = (double) aceptados / calibrar.size();
 //                System.out.printf("  P0=%.2f -> T0=%.4f -> tasa=%.2f%n", p0, t0, tasa);
 //            }
-
-            double temperaturaInicial = (-0.1 * foActual) / Math.log(0.3);
 
             for (int k = 0; k < enfriamiento; k++) {
                 double Tk = temperaturaInicial / (1 + k);
@@ -117,6 +119,7 @@ public class EnfriamientoSimulado extends Algoritmo {
                 }
             }
 
+            // Guardamos
             this.recorrido = mejorSolucionGlobal;
             this.mejorFuncionObjetivo = mejorFOGlobal;
             this.distanciaRecorrida = mejorKMGlobal;

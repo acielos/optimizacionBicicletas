@@ -31,6 +31,7 @@ public class BusquedaLocalMV extends Algoritmo {
             this.mejorFuncionObjetivo = Double.POSITIVE_INFINITY;
             this.numEvaluaciones = 0;
             this.camion.carga = 7;
+            this.historialExplotacion.clear();
 
             // Para la semilla
             Random rand = new Random(this.semilla[i]);
@@ -75,8 +76,8 @@ public class BusquedaLocalMV extends Algoritmo {
                 double mejorEntropiaLocal = this.entropiaFinal;
                 List<Estacion> mejorVecinoGlobal = null;
 
-                for (int l = 1; l < mejorVecino.size(); l++) {
-                    for (int m = 1; m < mejorVecino.size(); m++) {
+                for (int l = 1; l < mejorVecino.size() - 1 && numEvaluaciones < 3000; l++) {
+                    for (int m = 1 + l; m < mejorVecino.size() && numEvaluaciones < 3000; m++) {
 
                         //
                         List<Estacion> vecinoOrden = new ArrayList<>(mejorVecino);

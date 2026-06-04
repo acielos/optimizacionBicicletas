@@ -42,11 +42,6 @@ public class BusquedaLocalPM extends Algoritmo {
             //Recomponemos la solución para asegurar que estaciones y cargas vayan en conjunto
             List<Estacion> inicialOrdenado = recomponer(mezclado);
 
-            // Equilibramos nuestra solucion inicial
-            for (Estacion e : inicialOrdenado) {
-                equilibrarEstacion(e);
-            }
-
             // Empezamos a calcular/guardar valores de nuestra sol inicial
             double kmsInicial = distanciaManhattan.calculaCompleto(inicialOrdenado);
             this.mejorFuncionObjetivo = calcularFObjetivo(kmsInicial, inicialOrdenado);
@@ -55,43 +50,47 @@ public class BusquedaLocalPM extends Algoritmo {
             this.entropiaFinal = calcularEntropiaTotal(inicialOrdenado);
 
             // Para comprobar si mejora o no
-            boolean mejoro = true;
+            int mejoro = 0;
 
             // Una vez lo tenemos todo, vamos a proceder a la parte interesante del algoritmo
-            while (numEvaluaciones < 3000 && mejoro) {
+            while (numEvaluaciones < 3000 && mejoro < 3) {
 
                 // por si a caso
-                mejoro = false;
                 this.camion.reset();
 
-                // Para salir aqui cuando sea 1
-                primero:
+                List<int[]> pares = new ArrayList<>();
                 for (int l = 1; l < mejorVecino.size(); l++) {
                     for (int m = l+1; m < mejorVecino.size(); m++) {
+                        pares.add(new int[]{l, m});
+                    }
+                }
 
-                        List<Estacion> vecinoOrden = new ArrayList<>(mejorVecino);
-                        Collections.swap(vecinoOrden, l, m);
+                // Mezclamos los pares
+                Collections.shuffle(pares, rand);
 
-                        // Para cada iteracion
-                        this.camion.reset();
+                for (int[] par : pares){
+                    int l = par[0] , m = par[1];
 
-                        // Reconstruimos como antes para la sestaciones
-                        List<Estacion> vecinoEquilibrado = recomponer(vecinoOrden);
+                    List<Estacion> vecinoOrden = new ArrayList<>(mejorVecino);
+                    Collections.swap(vecinoOrden, l, m);
 
-                        // Hacemos los calculos de este vecino
-                        double distanciaVecino = distanciaManhattan.calculaCompleto(vecinoEquilibrado);
-                        double funcionObjetivoVecino = calcularFObjetivo(distanciaVecino, vecinoEquilibrado);
+                    // Para cada iteracion
+                    this.camion.reset();
 
-                        if (funcionObjetivoVecino < this.mejorFuncionObjetivo) {
-                            this.mejorFuncionObjetivo = funcionObjetivoVecino;
-                            this.recorrido = vecinoEquilibrado;
-                            this.distanciaRecorrida = distanciaVecino;
-                            this.entropiaFinal = calcularEntropiaTotal(vecinoEquilibrado);
-                            mejorVecino = vecinoEquilibrado;
-                            mejoro = true;
+                    // Reconstruimos como antes para la sestaciones
+                    List<Estacion> vecinoEquilibrado = recomponer(vecinoOrden);
 
-                            break primero;
-                        }
+                    // Hacemos los calculos de este vecino
+                    double distanciaVecino = distanciaManhattan.calculaCompleto(vecinoEquilibrado);
+                    double funcionObjetivoVecino = calcularFObjetivo(distanciaVecino, vecinoEquilibrado);
+
+                    if (funcionObjetivoVecino < this.mejorFuncionObjetivo) {
+                        this.mejorFuncionObjetivo = funcionObjetivoVecino;
+                        this.recorrido = vecinoEquilibrado;
+                        this.distanciaRecorrida = distanciaVecino;
+                        this.entropiaFinal = calcularEntropiaTotal(vecinoEquilibrado);
+                        mejorVecino = vecinoEquilibrado;
+                        mejoro++;
                     }
                 }
             }
